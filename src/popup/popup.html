@@ -1,0 +1,63 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+  <head>
+    <title>Mobile View</title>
+    <style>
+      body {
+        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+        font-size: 100%;
+        width: 400px;
+        margin: 0
+      }
+      .content {
+        margin: 0;
+        padding: 0;
+      }
+      button {
+        width: 75%;
+        padding: 12px 0;
+        margin: 10px 12.5%;
+        box-sizing: border-box;
+        font-size: 18px;
+        box-shadow:inset 0px 1px 0px 0px #f5978e;
+        background:linear-gradient(to bottom, #f24537 5%, #c62d1f 100%);  border-radius:6px;
+        border:1px solid #d02718;
+        cursor:pointer;
+        color:#ffffff;
+        font-weight:bold;
+        text-shadow:0px 1px 0px #810e05;
+      }
+      #autoRunInst {
+        width: 75%;
+        font-size: 1.1em;
+        margin: 15px auto;
+      }
+    </style>
+
+    <script src="../lib/jquery.js"></script>
+    <script src="popup.js"></script>
+
+  </head>
+  <body>
+
+    <div class="content">
+      <button id="run-once" class="whitelist off-whitelist">Run Once</button>
+      <button id="whitelist-site" class="whitelist off-whitelist">Enable On Site</button>
+      <button id="unwhitelist-site" class="whitelist on-whitelist">Disable On Site</button>
+      <button id="disable-once" class="blacklist off-blacklist">Disable Once</button>
+      <button id="blacklist-site" class="blacklist off-blacklist">Disable On Site</button>
+      <button id="unblacklist-site" class="blacklist on-blacklist">Enable On Site</button>
+      <div id="autoRunInst" class="autoRun blacklist">
+        GlobalMobile is set to run on every page
+        <br>
+        To change this, update the <a href="../options/options.html" target="_blank">options</a>
+      </div>
+    </div>
+
+  </body>
+</html>

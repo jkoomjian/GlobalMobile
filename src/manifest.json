@@ -1,0 +1,28 @@
+{
+  "manifest_version": 2,
+
+  "name": "GlobalMobile",
+  "description": "Make all web pages display as they would on a mobile device, regardless of the screen size.",
+  "version": "1.0",
+  "options_page": "options/options.html",
+
+  "browser_action": {
+    "default_icon": "img/icon_inactive.png",
+    "default_popup": "popup/popup.html",
+    "default_title": "Click here!"
+  },
+
+  "background": {
+    "scripts": ["js/common.js", "background.js"],
+    "persistent": true
+  },
+
+  "permissions": [
+    "activeTab",                          // get active tab details (url)
+    "webRequest", "webRequestBlocking",   // modify http headers
+    "webNavigation",                      // on page load event
+    "http://*/*", "https://*/*",          // ajax requests
+    "storage",                            // storage for options
+    "tabs"                                // close current tab
+  ]
+}

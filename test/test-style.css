@@ -1,0 +1,18 @@
+@import "./test1.css";
+
+body {background-color: red;}
+body:before {content: "Desktop";}
+
+@media (max-width: 400px) {
+  body {background-color: green;}
+  body:before {content: "Mobile";}
+}
+
+body > div {
+  border: 3px dashed black;
+  margin: 50px auto;
+  padding: 30px;
+  width: 300px;
+  height: 150px;
+  box-sizing: border-box;
+}
