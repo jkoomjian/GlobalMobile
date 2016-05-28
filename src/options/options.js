@@ -17,11 +17,14 @@ optionsApp.config(function($routeProvider){
 /*----------- Services ----------------*/
 optionsApp.factory('chromeSync', function() {
   return {
-    get: function(callback) {
-      chrome.storage.sync.get('whitelist', callback);
+    get: function(listName, callback) {
+      chrome.storage.sync.get(listName, function(items) {
+        items = items[listName] || {};
+        callback(items);
+      });
     },
-    saveToSync: function(siteUrl, callback, toDelete) {
-      gmbp.saveChangeToList('whitelist', siteUrl, callback, toDelete);
+    saveToSync: function(listName, siteUrl, callback, toDelete) {
+      gmbp.saveChangeToList(listName, siteUrl, callback, toDelete);
     }
   };
 });
@@ -29,7 +32,8 @@ optionsApp.factory('chromeSync', function() {
 
 /*----------- Controllers ----------------*/
 optionsApp.controller('optionsController', function($scope, $route, $routeParams, $location, chromeSync, $timeout, $document) {
-  $scope.sites = loadSites();
+  $scope.whitelist = loadList('whitelist');
+  $scope.blacklist = loadList('blacklist');
   $scope.autoRun = loadAutoRun();
   $scope.deleteSite = deleteSite;
   $scope.addSite = addSite;
@@ -44,10 +48,9 @@ optionsApp.controller('optionsController', function($scope, $route, $routeParams
     }
   });
 
-  function loadSites() {
+  function loadList(listName) {
     var sites = [];
-    chromeSync.get(function(items) {
-      items = items['whitelist'] || {};
+    chromeSync.get(listName, function(items) {
       for (key in items) {
         if (items[key] == "domain") {
           sites.push(key);
@@ -60,15 +63,17 @@ optionsApp.controller('optionsController', function($scope, $route, $routeParams
 
   function deleteSite() {
     var siteUrl = this.site;
-    var index = $scope.sites.findIndex( elem => elem === siteUrl );
-    $scope.sites.splice(index, 1);
-    chromeSync.saveToSync(siteUrl, null, true);
+    var listName = ($scope.autoRun ? 'black' : 'white') + 'list';
+    var index = $scope[listName].findIndex( elem => elem === siteUrl );
+    $scope[listName].splice(index, 1);
+    chromeSync.saveToSync(listName, siteUrl, null, true);
   }
 
   function addSite() {
-    var siteUrl = document.getElementById("new-site").value;
-    chromeSync.saveToSync(siteUrl, function() {
-      $scope.sites = loadSites();
+    var siteUrl = this.newSiteBox;
+    var listName = ($scope.autoRun ? 'black' : 'white') + 'list';
+    chromeSync.saveToSync(listName, siteUrl, function() {
+      $scope[listName] = loadList(listName);
       document.getElementById("new-site").value = "";
     });
     closeAddNew();
@@ -92,7 +97,7 @@ optionsApp.controller('optionsController', function($scope, $route, $routeParams
     $location.path("/add-site"); //same as window.location
     $timeout(function () {
       //Supposedly this runs on ondomready when no timer arg is given - seems like it works
-      document.getElementById("new-site").focus();
+      $("#new-site").focus();
     });
   }
 

@@ -29,17 +29,34 @@
     </div>
 
     <div class="whitelist subsetting">
-      <h3>Whitelist</h3>
-      <div class="subtext">GlobalMobile will run on the whitelisted sites below</div>
+
+      <div ng-if="!autoRun">
+        <h3>Whitelist</h3>
+        <div class="subtext">GlobalMobile will run on the sites below:</div>
+      </div>
+      <div ng-if="autoRun">
+        <h3>Blacklist</h3>
+        <div class="subtext">GlobalMobile will run on evey site EXCEPT those below:</div>
+      </div>
+
       <div class="searchWrapper">
         <input type="search" placeholder="Search" ng-model="searchKey" />
       </div>
       <div class="wl-list">
         <div class="wl-sites">
 
-          <div class="wl-site" ng-repeat="site in sites|filter:searchKey">
-            <div class="wls-host">{{site}}</div>
-            <div class="wls-delete" ng-click="deleteSite()">X</div>
+          <div ng-if="!autoRun">
+            <div class="wl-site" ng-repeat="site in whitelist|filter:searchKey">
+              <div class="wls-host">{{site}}</div>
+              <div class="wls-delete" ng-click="deleteSite()">X</div>
+            </div>
+          </div>
+
+          <div ng-if="autoRun">
+            <div class="wl-site" ng-repeat="site in blacklist|filter:searchKey">
+              <div class="wls-host">{{site}}</div>
+              <div class="wls-delete" ng-click="deleteSite()">X</div>
+            </div>
           </div>
 
         </div>

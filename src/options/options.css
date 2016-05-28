@@ -8,7 +8,7 @@ body {
 }
 
 .subsetting {width: 60%; margin: 25px auto 0 auto;}
-.subsetting > h3 {text-align: left; margin-bottom: 8px;}
+.subsetting h3 {text-align: left; margin-bottom: 8px;}
 
 .always-on-options > * {display: inline-block; vertical-align: middle; text-align: left;}
 .always-on-options .form {width: 19%; text-align: center;}
