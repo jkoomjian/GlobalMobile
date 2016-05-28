@@ -1,5 +1,5 @@
 const mobileUserAgent = "Mozilla/5.0 (Linux; Android 6.0) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.89 Mobile Safari/537.36";
-var isRequestWhitelisted = false;
+var isRequestEnabledTmp = undefined;
 var runOnce = false;
 var disableOnce = false;
 var whitelistCache = {};
@@ -25,40 +25,41 @@ function loadCachedData() {
 
 /*-------------- On Page Events ----------------*/
 
-// Run on this page?
+//Cache the isEnabled result - will be called many times per request
 function isEnabled(url) {
-  //console.log(`isRequestWhitelisted ${isRequestWhitelisted}`);
+
+  if (isRequestEnabledTmp !== undefined) {
+    return isRequestEnabledTmp;
+  }
+
+  isRequestEnabledTmp = _isEnabled(url)
+  return isRequestEnabledTmp;
+}
+
+// Run GM on this page?
+function _isEnabled(url) {
+  //console.log(`isRequestEnabledTmp ${isRequestEnabledTmp}`);
   //console.log(`runOnce ${runOnce}`);
   //console.log(whitelistCache);
-
-  if (isRequestWhitelisted) {
-    return true;
-  }
+  //console.log(`url: ${url} domain: ${getDomain(url)}`);
 
   //If runOnce is true, always run
   if (runOnce) {
-    isRequestWhitelisted = true;
     return true;
   }
 
   if (disableOnce) {
-    isRequestWhitelisted = false;
     return false;
   }
 
   var domain = getDomain(url);
-  //console.log(`url: ${url} domain: ${domain}`);
 
-  //is domain whitelisted?
-  if (whitelistCache[domain] == "domain") {
-    isRequestWhitelisted = true;
-    return true;
-  }
-
-  //TODO add blacklist
   if (autoRunCache) {
-    isRequestWhitelisted = true;
-    return true;
+    //run if domain is not on blacklist
+    return blacklistCache[domain] != "domain";
+  } else {
+    //run if domain is on whitelist
+    return whitelistCache[domain] == "domain";
   }
 
   return false;
@@ -68,7 +69,8 @@ function afterPageLoad(url) {
   // Update the icon once after page load
   updateIcon(url);
   //vars are scoped to extension, are persisted across pages, so unset
-  isRequestWhitelisted = disableOnce = runOnce = false;
+  isRequestEnabledTmp = undefined;
+  disableOnce = runOnce = false;
 }
 
 

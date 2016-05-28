@@ -74,8 +74,8 @@ optionsApp.controller('optionsController', function($scope, $route, $routeParams
     var listName = ($scope.autoRun ? 'black' : 'white') + 'list';
     chromeSync.saveToSync(listName, siteUrl, function() {
       $scope[listName] = loadList(listName);
-      document.getElementById("new-site").value = "";
     });
+    $("#new-site").value = "";
     closeAddNew();
   }
 
