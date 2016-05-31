@@ -1,4 +1,5 @@
 var jkDomain = "www.jonathankoomjian.com";
+var jkUrl = "http://www.jonathankoomjian.com/projects/"
 
 describe("GetDomain should", function() {
   it("return the right value", function() {
@@ -13,31 +14,48 @@ describe("GetDomain should", function() {
   });
 });
 
-describe("_saveToSync", function() {
+describe("saveChangeToList", function() {
 
   beforeEach(function() {
-    window.whitelist = {};
+    window.whitelistCache = {};
+    window.blacklistCache = {};
     window.myCallback = function() {};
-    if (!window['chrome']) window.chrome = {};
+    window.chrome = window['chrome'] || {};
     chrome.storage = {
       sync: {
-        'set': function(v1, v2){}
+        'get': function(arg1, arg2){},
+        'set': function(arg1, arg2){}
       }
     };
+    spyOn(chrome.storage.sync, 'get');
     spyOn(chrome.storage.sync, 'set');
   });
 
   it("calls sync correctly", function() {
-    _saveToSync("http://www.jonathankoomjian.com/projects/", "domain", myCallback);
-    var ar = {};
-    ar[jkDomain] = "domain";
+    saveChangeToList("whitelist", jkUrl, myCallback);
+    expect(chrome.storage.sync.get).toHaveBeenCalled();
+    expect(chrome.storage.sync.get.calls.argsFor(0)[0]).toEqual({"whitelist": {}});
+    //run callback, verify it calls set correctly
+    let callback = chrome.storage.sync.get.calls.argsFor(0)[1];
+    callback({"whitelist": {}});
     expect(chrome.storage.sync.set).toHaveBeenCalled();
-    expect(chrome.storage.sync.set.calls.argsFor(0)[0]).toEqual(ar);
+    let toSet = {}
+    toSet[jkDomain] = "domain";
+    expect(chrome.storage.sync.set.calls.argsFor(0)[0]).toEqual({"whitelist": toSet});
   });
 
-  it("updates the whitelist", function() {
-    _saveToSync("http://www.jonathankoomjian.com/projects/", "domain", myCallback);
-    expect(whitelist[jkDomain]).toEqual("domain");
+  it("updates the cache", function() {
+    saveChangeToList("whitelist", jkUrl, myCallback);
+    expect(whitelistCache[jkDomain]).toEqual("domain");
+    saveChangeToList("whitelist", jkUrl, myCallback);
+    expect(whitelistCache[jkDomain]).toEqual("domain");
+    saveChangeToList("blacklist", jkUrl, myCallback);
+    expect(blacklistCache[jkDomain]).toEqual("domain");
+    //delete
+    saveChangeToList("blacklist", jkUrl, myCallback, true);
+    saveChangeToList("whitelist", jkUrl, myCallback, true);
+    expect(whitelistCache[jkDomain]).toEqual("deleted");
+    expect(blacklistCache[jkDomain]).toEqual("deleted");
   });
 
 });
