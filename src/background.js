@@ -1,13 +1,16 @@
 const mobileUserAgent = "Mozilla/5.0 (Linux; Android 6.0) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.89 Mobile Safari/537.36";
-var isRequestEnabledTmp = undefined;
-var runOnce = false;
-var disableOnce = false;
-var whitelistCache = {};
-var blacklistCache = {};
-var autoRunCache = false;
 
 
 /*-------------- On Extension Load ----------------*/
+function gmInit() {
+  window.isRequestEnabledTmp = undefined;
+  window.runOnce = false;
+  window.disableOnce = false;
+  window.whitelistCache = {};
+  window.blacklistCache = {};
+  window.autoRunCache = false;
+}
+
 
 /* The whitelistCache and autoRunCache are loaded async.
   This causes problems with onBeforeSendHeaders - the headers will
@@ -128,4 +131,5 @@ chrome.webRequest.onBeforeSendHeaders.addListener(updateHeaders,
 chrome.webNavigation.onCompleted.addListener(updateQuerySelectors);
 
 //On Extension Load
+gmInit();
 loadCachedData();
