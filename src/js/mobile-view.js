@@ -7,7 +7,7 @@
 
 /* ---------- Helpers ----------------*/
 function _isCss(stylesheetObj) {
-  return (typeof stylesheetObj === "object" && (stylesheetObj.rules || stylesheetObj.cssRules))
+  return (typeof stylesheetObj === "object" && (stylesheetObj.rules || stylesheetObj.cssRules));
 }
 
 //Given an array of css selectors, and a media query rule, set the selectors to use the rule
@@ -22,7 +22,7 @@ function _applyMediaQuery(mQueries, mediaQueryText) {
 }
 
 function isStyleSheetFromSameOrigin(cssStyleSheet) {
-  return !(cssStyleSheet.rules == null && cssStyleSheet.href);
+  return !(cssStyleSheet.rules === null && cssStyleSheet.href);
 }
 
 //Apply some css to help style the mobile content

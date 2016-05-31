@@ -1,16 +1,16 @@
 var jkDomain = "www.jonathankoomjian.com";
-var jkUrl = "http://www.jonathankoomjian.com/projects/"
+var jkUrl = "http://www.jonathankoomjian.com/projects/";
 
 describe("GetDomain should", function() {
   it("return the right value", function() {
-    expect( getDomain("http://www.jonathankoomjian.com/projects/") ).toBe(jkDomain)
-    expect( getDomain("https://www.jonathankoomjian.com/projects/") ).toBe(jkDomain)
-    expect( getDomain("http://www.jonathankoomjian.com/") ).toBe(jkDomain)
-    expect( getDomain("http://www.jonathankoomjian.com") ).toBe(jkDomain)
+    expect( getDomain("http://www.jonathankoomjian.com/projects/") ).toBe(jkDomain);
+    expect( getDomain("https://www.jonathankoomjian.com/projects/") ).toBe(jkDomain);
+    expect( getDomain("http://www.jonathankoomjian.com/") ).toBe(jkDomain);
+    expect( getDomain("http://www.jonathankoomjian.com") ).toBe(jkDomain);
   });
   it("handle urls w/out http", function() {
-    expect( getDomain("www.jonathankoomjian.com/projects/") ).toBe(jkDomain)
-    expect( getDomain("jonathankoomjian.com/projects/") ).toBe("jonathankoomjian.com")
+    expect( getDomain("www.jonathankoomjian.com/projects/") ).toBe(jkDomain);
+    expect( getDomain("jonathankoomjian.com/projects/") ).toBe("jonathankoomjian.com");
   });
 });
 

@@ -11,7 +11,7 @@ function saveChangeToList(listName, siteUrl, callback, shouldDelete) {
 
   //Update persistent storage
   var toGet = {};
-  toGet[listName] = {}
+  toGet[listName] = {};
   chrome.storage.sync.get(toGet, function(items) {
     let currList = items[listName];
     currList[domain] = newVal;
@@ -34,7 +34,7 @@ function isOnList(listName, url, callback) {
 
 function getDomain(url) {
   if (url.indexOf("http") !== 0) {
-    url = "http://" + url
+    url = "http://" + url;
   }
   var a = document.createElement("a");
   a.href = url;

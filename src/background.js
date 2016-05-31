@@ -35,7 +35,7 @@ function isEnabled(url) {
     return isRequestEnabledTmp;
   }
 
-  isRequestEnabledTmp = _isEnabled(url)
+  isRequestEnabledTmp = _isEnabled(url);
   return isRequestEnabledTmp;
 }
 
@@ -94,7 +94,7 @@ var updateHeaders = function(details) {
     });
     return {requestHeaders: details.requestHeaders};
   }
-}
+};
 
 // Called when the page loading is complete
 // Running in Chrome Extension Env.
@@ -117,7 +117,7 @@ var updateQuerySelectors = function(details) {
 
   // Should be finished loading now
   afterPageLoad(details.url);
-}
+};
 
 
 /*-------------- Listeners ----------------*/
