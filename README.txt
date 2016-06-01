@@ -23,6 +23,14 @@
     change, select 'Remove From Whitelist' in the GlobalMobile menu.
 
 
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    GlobalMobileGlobalMobileGlobalMobileGlobalMobileGlobalMobileGlobalMobileGlo
+    balMobileGlobalMobileGlobalMobileGlobalMobileGlobalMobileGlobalMobileGlobal
+    MobileGlobalMobileGlobalMobileGlobalMobileGlobalMobileGlobalMobileGlobalMob
+    ileGlobalMobileGlobalMobileGlobalMobileGlobalMobileGlobalMobileGlobalMobile
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
     Documentation Links:
     https://developer.chrome.com/extensions/api_index
     https://developer.chrome.com/extensions/webRequest
