@@ -26,8 +26,9 @@ function saveChangeToList(listName, siteUrl, callback, shouldDelete) {
 }
 
 function isOnList(listName, url, callback) {
-  var domain = getDomain(url);
-  chrome.storage.sync.get(listName, function(items) {
+  var domain = getDomain(url), toGet = {};
+  toGet[listName] = {};
+  chrome.storage.sync.get(toGet, function(items) {
     callback( items[listName][domain] == "domain" );
   });
 }
