@@ -1,15 +1,18 @@
 {
   "manifest_version": 2,
 
-  "name": "GlobalMobile",
-  "description": "Make all web pages display as they would on a mobile device, regardless of the screen size.",
+  "name": "Global Mobile",
   "version": "1.0",
+  "description": "Make all web pages display as they would on a mobile device",
   "options_page": "options/options.html",
+  "icons": { "16": "img/icon-16.png",
+              "48": "img/icon-48.png",
+              "128": "img/icon-128.png" },
 
   "browser_action": {
     "default_icon": "img/icon_inactive.png",
     "default_popup": "popup/popup.html",
-    "default_title": "Click here!"
+    "default_title": "Global Mobile - click to view mobile version of this page"
   },
 
   "background": {
