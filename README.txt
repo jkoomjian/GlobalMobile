@@ -41,3 +41,11 @@
 
     Known Issues:
     * vw doesn't work - references screen width
+
+    Permissions:
+      activeTab:                    get active tab details (url)
+      webRequest,                   webRequestBlocking: modify http headers
+      webNavigation:                on page load event
+      http://*/*", "https://*/*:    ajax requests
+      storage:                      storage for options
+      tabs:                         close current tab
