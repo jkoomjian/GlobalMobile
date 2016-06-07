@@ -41,4 +41,22 @@ describe("isEnabled should", function() {
     expect( _isEnabled(jkUrl) ).toBe(true);
   });
 
+  it("ignores whitelist on autoRun", function() {
+    window.autoRunCache = true;
+    window.whitelistCache[jkDomain] = "domain";
+    window.blacklistCache[jkDomain] = "domain";
+    expect( _isEnabled(jkUrl) ).toBe(false);
+  });
+
+  it("ignores blacklist on autoRun=false", function() {
+    window.whitelistCache[jkDomain] = "domain";
+    window.blacklistCache[jkDomain] = "domain";
+    expect( _isEnabled(jkUrl) ).toBe(true);
+  });
+
+  it("works on subdomains", function() {
+    window.whitelistCache[getDomain("www.ebay.com")] = "domain";
+    expect( _isEnabled("m.ebay.com/asdf") ).toBe(true);
+  });
+
 });

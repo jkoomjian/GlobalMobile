@@ -1,4 +1,4 @@
-var jkDomain = "www.jonathankoomjian.com";
+var jkDomain = "jonathankoomjian.com";
 var jkUrl = "http://www.jonathankoomjian.com/projects/";
 
 describe("GetDomain should", function() {
@@ -7,6 +7,7 @@ describe("GetDomain should", function() {
     expect( getDomain("https://www.jonathankoomjian.com/projects/") ).toBe(jkDomain);
     expect( getDomain("http://www.jonathankoomjian.com/") ).toBe(jkDomain);
     expect( getDomain("http://www.jonathankoomjian.com") ).toBe(jkDomain);
+    expect( getDomain("http://m.jonathankoomjian.com") ).toBe(jkDomain);
   });
   it("handle urls w/out http", function() {
     expect( getDomain("www.jonathankoomjian.com/projects/") ).toBe(jkDomain);
