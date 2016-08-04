@@ -62,10 +62,14 @@ function _isEnabled(url) {
     return blacklistCache[domain] != "domain";
   } else {
     //run if domain is on whitelist
-    return whitelistCache[domain] == "domain";
+    return whitelistCache[domain] == "domain" || (whitelistCache[domain] == "nohome" && !is_homepage(url));
   }
 
   return false;
+}
+
+function is_homepage(url) {
+  return URI.parse(url).path == "/";
 }
 
 function afterPageLoad(url) {

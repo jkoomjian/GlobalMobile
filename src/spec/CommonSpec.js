@@ -40,7 +40,7 @@ describe("saveChangeToList", function() {
     let callback = chrome.storage.sync.get.calls.argsFor(0)[1];
     callback({"whitelist": {}});
     expect(chrome.storage.sync.set).toHaveBeenCalled();
-    let toSet = {}
+    let toSet = {};
     toSet[jkDomain] = "domain";
     expect(chrome.storage.sync.set.calls.argsFor(0)[0]).toEqual({"whitelist": toSet});
   });
@@ -53,8 +53,8 @@ describe("saveChangeToList", function() {
     saveChangeToList("blacklist", jkUrl, myCallback);
     expect(blacklistCache[jkDomain]).toEqual("domain");
     //delete
-    saveChangeToList("blacklist", jkUrl, myCallback, true);
-    saveChangeToList("whitelist", jkUrl, myCallback, true);
+    saveChangeToList("blacklist", jkUrl, myCallback, "deleted");
+    saveChangeToList("whitelist", jkUrl, myCallback, "deleted");
     expect(whitelistCache[jkDomain]).toEqual("deleted");
     expect(blacklistCache[jkDomain]).toEqual("deleted");
   });

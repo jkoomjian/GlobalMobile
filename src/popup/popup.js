@@ -37,7 +37,7 @@ function _popupUpdateList(listName, toDelete) {
   chrome.tabs.query({active: true, currentWindow: true }, tabs => {
     gmbp.saveChangeToList(listName, tabs[0].url, function() {
       _popupReload(window);
-    }, toDelete);
+    }, toDelete ? "deleted" : "domain");
   });
 }
 

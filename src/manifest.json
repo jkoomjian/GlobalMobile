@@ -16,7 +16,7 @@
   },
 
   "background": {
-    "scripts": ["js/common.js", "background.js"],
+    "scripts": ["lib/uri.js", "js/common.js", "background.js"],
     "persistent": true
   },
 

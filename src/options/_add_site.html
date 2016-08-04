@@ -13,5 +13,12 @@
               ng-required="true" />
       <input type="submit" id="new-site-submit" value="Add" tabindex="2" ng-disabled="!newSiteBox" ng-click="addSite()" />
     </div>
+    <div class="options" ng-show="!autoRun">
+      <input type="checkbox" id="skipHomeCheckbox" ng-model="skipHomeCheckbox" />
+      <label for="skipHomeCheckbox">
+        Don't run on homepage
+        <div class="subtext">(Ex. will run on nytimes.com/article but not nytimes.com/)</div>
+      </label>
+    </div>
   </div>
 </div>

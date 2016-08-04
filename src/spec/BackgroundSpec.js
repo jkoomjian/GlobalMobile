@@ -59,4 +59,23 @@ describe("isEnabled should", function() {
     expect( _isEnabled("m.ebay.com/asdf") ).toBe(true);
   });
 
+  it("handles nohome", function() {
+    window.whitelistCache[getDomain("www.jk.com")] = "domain";
+    window.whitelistCache[getDomain("www.jk2.com")] = "nohome";
+    expect( _isEnabled("http://www.jk.com/asdf") ).toBe(true);
+    expect( _isEnabled("http://www.jk2.com/asdf") ).toBe(true);
+    expect( _isEnabled("http://www.jk2.com") ).toBe(false);
+    expect( _isEnabled("http://www.jk2.com/") ).toBe(false);
+    expect( _isEnabled("http://www.jk2.com/?safd") ).toBe(false);
+  });
+
+});
+
+describe("Is Homepage should", function() {
+  it("works on homepages and non-homepages", function() {
+    expect( is_homepage(jkUrl) ).toBe(false);
+    expect( is_homepage("http://www.jonathankoomjian.com/") ).toBe(true);
+    expect( is_homepage("http://www.jonathankoomjian.com") ).toBe(true);
+    expect( is_homepage("http://www.nytimes.com/?adsf") ).toBe(true);
+  });
 });

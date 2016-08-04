@@ -23,8 +23,8 @@ optionsApp.factory('chromeSync', function() {
         callback(items);
       });
     },
-    saveToSync: function(listName, siteUrl, callback, toDelete) {
-      gmbp.saveChangeToList(listName, siteUrl, callback, toDelete);
+    saveToSync: function(listName, siteUrl, callback, saveFlag) {
+      gmbp.saveChangeToList(listName, siteUrl, callback, saveFlag);
     }
   };
 });
@@ -52,7 +52,7 @@ optionsApp.controller('optionsController', function($scope, $route, $routeParams
     var sites = [];
     chromeSync.get(listName, function(items) {
       for (key in items) {
-        if (items[key] == "domain") {
+        if (gmbp.isActiveDomain(items[key])) {
           sites.push(key);
         }
       }
@@ -66,15 +66,21 @@ optionsApp.controller('optionsController', function($scope, $route, $routeParams
     var listName = ($scope.autoRun ? 'black' : 'white') + 'list';
     var index = $scope[listName].findIndex( elem => elem === siteUrl );
     $scope[listName].splice(index, 1);
-    chromeSync.saveToSync(listName, siteUrl, null, true);
+    chromeSync.saveToSync(listName, siteUrl, null, "deleted");
   }
 
   function addSite() {
     var siteUrl = this.newSiteBox;
+    var skipHome = this.skipHomeCheckbox;
     var listName = ($scope.autoRun ? 'black' : 'white') + 'list';
+    var saveFlag = "domain";
+    if (skipHome) {
+      saveFlag = "nohome";
+    }
+
     chromeSync.saveToSync(listName, siteUrl, function() {
       $scope[listName] = loadList(listName);
-    });
+    }, saveFlag);
     $("#new-site").value = "";
     closeAddNew();
   }

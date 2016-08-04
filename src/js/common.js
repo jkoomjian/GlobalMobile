@@ -1,20 +1,25 @@
 /*----------- Shared ----------------*/
 
 //Save the domain to the given list
-function saveChangeToList(listName, siteUrl, callback, shouldDelete) {
+//Save flag can be;
+// domain - run on entire domain
+// nohome - run on all pages in domain except homepage
+// deleted - do not run on domain
+function saveChangeToList(listName, siteUrl, callback, saveFlag) {
   var domain = getDomain(siteUrl);
-  var newVal = shouldDelete ? "deleted" : "domain";
+  if (saveFlag === undefined) saveFlag = "domain";
+  if (["deleted", "domain", "nohome"].indexOf(saveFlag) < 0) throw "Invalid save flag";
 
   //Update local cache
   var listCache = window[ listName + "Cache"];
-  listCache[domain] = newVal;
+  listCache[domain] = saveFlag;
 
   //Update persistent storage
   var toGet = {};
   toGet[listName] = {};
   chrome.storage.sync.get(toGet, function(items) {
     let currList = items[listName];
-    currList[domain] = newVal;
+    currList[domain] = saveFlag;
 
     var toSet = {};
     toSet[listName] = currList;
@@ -29,8 +34,12 @@ function isOnList(listName, url, callback) {
   var domain = getDomain(url), toGet = {};
   toGet[listName] = {};
   chrome.storage.sync.get(toGet, function(items) {
-    callback( items[listName][domain] == "domain" );
+    callback( isActiveDomain(items[listName][domain]) );
   });
+}
+
+function isActiveDomain(domainValue) {
+  return domainValue == "domain" || domainValue == "nohome";
 }
 
 function getDomain(url) {
