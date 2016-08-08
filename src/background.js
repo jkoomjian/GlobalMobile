@@ -41,10 +41,16 @@ function isEnabled(url) {
 
 // Run GM on this page?
 function _isEnabled(url) {
-  //console.log(`isRequestEnabledTmp ${isRequestEnabledTmp}`);
-  //console.log(`runOnce ${runOnce}`);
-  //console.log(whitelistCache);
-  //console.log(`url: ${url} domain: ${getDomain(url)}`);
+  // console.log(`
+  //               autorun: ${autoRunCache}
+  //               runOnce ${runOnce}
+  //               disableOnce ${disableOnce}
+  //               url: ${url}
+  //               domain: ${getDomain(url)}
+  //               isHomepage: ${isHomepage(url)}
+  //   `);
+  //   console.dir(whitelistCache);
+  //   console.dir(blacklistCache);
 
   //If runOnce is true, always run
   if (runOnce) {
@@ -55,21 +61,24 @@ function _isEnabled(url) {
     return false;
   }
 
-  var domain = getDomain(url);
-
   if (autoRunCache) {
     //run if domain is not on blacklist
-    return blacklistCache[domain] != "domain";
+    return !isInList(blacklistCache, url);
   } else {
     //run if domain is on whitelist
-    return whitelistCache[domain] == "domain" || (whitelistCache[domain] == "nohome" && !is_homepage(url));
+    return isInList(whitelistCache, url);
   }
 
   return false;
 }
 
-function is_homepage(url) {
+function isHomepage(url) {
   return URI.parse(url).path == "/";
+}
+
+function isInList(list, url) {
+  var domain = getDomain(url);
+  return list[domain] == "domain" || (list[domain] == "nohome" && !isHomepage(url));
 }
 
 function afterPageLoad(url) {

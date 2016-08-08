@@ -46,12 +46,17 @@
   <body>
 
     <div class="content">
-      <button id="run-once" class="whitelist off-whitelist">Run Once</button>
+
+      <button id="run-once-wl" class="run-once whitelist off-whitelist">Run Once</button>
       <button id="whitelist-site" class="whitelist off-whitelist">Enable On Site</button>
+      <button id="disable-once-wl" class="disable-once whitelist on-whitelist">Disable Once</button>
       <button id="unwhitelist-site" class="whitelist on-whitelist">Disable On Site</button>
-      <button id="disable-once" class="blacklist off-blacklist">Disable Once</button>
+
+      <button id="disable-once-bl" class="disable-once blacklist off-blacklist">Disable Once</button>
       <button id="blacklist-site" class="blacklist off-blacklist">Disable On Site</button>
+      <button id="run-once-bl" class="run-once blacklist on-blacklist">Run Once</button>
       <button id="unblacklist-site" class="blacklist on-blacklist">Enable On Site</button>
+
       <div id="autoRunInst" class="autoRun blacklist">
         GlobalMobile is set to run on every page
         <br>

@@ -1,6 +1,3 @@
-var jkDomain = "jonathankoomjian.com";
-var jkUrl = "http://www.jonathankoomjian.com/projects/";
-
 describe("GetDomain should", function() {
   it("return the right value", function() {
     expect( getDomain("http://www.jonathankoomjian.com/projects/") ).toBe(jkDomain);

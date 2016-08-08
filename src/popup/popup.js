@@ -63,8 +63,8 @@ function _popupReload() {
 /*----------- Run! ----------------*/
 document.addEventListener('DOMContentLoaded', function() {
   [
-    ["#run-once", popupRunOnce],
-    ["#disable-once", popupDisableOnce],
+    [".run-once", popupRunOnce],
+    [".disable-once", popupDisableOnce],
     ["#whitelist-site", popupAddWhitelist],
     ["#unwhitelist-site", popupRemoveWhitelist],
     ["#blacklist-site", popupAddBlacklist],

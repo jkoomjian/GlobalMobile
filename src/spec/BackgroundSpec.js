@@ -15,12 +15,14 @@ describe("isEnabled should", function() {
 
   it("handle runOnce", function() {
     window.runOnce = true;
-    expect( isEnabled() ).toBe(true);
+    expect( _isEnabled(jkUrl) ).toBe(true);
   });
 
   it("handle disableOnce", function() {
     window.disableOnce = true;
-    expect( isEnabled() ).toBe(false);
+    expect( _isEnabled(jkUrl) ).toBe(false);
+    window.autoRunCache = true;
+    expect( _isEnabled(jkUrl) ).toBe(false);
   });
 
   it("returns the correct value from whitelist", function() {
@@ -73,9 +75,9 @@ describe("isEnabled should", function() {
 
 describe("Is Homepage should", function() {
   it("works on homepages and non-homepages", function() {
-    expect( is_homepage(jkUrl) ).toBe(false);
-    expect( is_homepage("http://www.jonathankoomjian.com/") ).toBe(true);
-    expect( is_homepage("http://www.jonathankoomjian.com") ).toBe(true);
-    expect( is_homepage("http://www.nytimes.com/?adsf") ).toBe(true);
+    expect( isHomepage(jkUrl) ).toBe(false);
+    expect( isHomepage("http://www.jonathankoomjian.com/") ).toBe(true);
+    expect( isHomepage("http://www.jonathankoomjian.com") ).toBe(true);
+    expect( isHomepage("http://www.nytimes.com/?adsf") ).toBe(true);
   });
 });
