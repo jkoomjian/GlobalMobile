@@ -225,15 +225,3 @@ function show(mQueries) {
 function hide(mQueries) {
   _applyMediaQuery(mQueries, "(max-width: 1px)");
 }
-
-// alert("hello world");
-// chrome.browserAction.onClicked.addListener(function(tab) {
-//     alert("mobile view loaded");
-//     chrome.tabs.executeScript(tab.id, {'code': 'runMV()'});
-//     // run()
-// });
-
-// document.addEventListener("DOMContentLoaded", function(event) {
-  // console.log( matchQuery("(min-width: 1px)", {type : 'all', width: '300px'}) );
-  // console.log( matchQuery("(max-width: 1px)", {type : 'all', width: '300px'}) );
-// });
