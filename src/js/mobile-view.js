@@ -6,6 +6,7 @@
 
 
 /* ---------- Helpers ----------------*/
+
 function _isCss(stylesheetObj) {
   return (typeof stylesheetObj === "object" && (stylesheetObj.rules || stylesheetObj.cssRules));
 }
@@ -28,8 +29,8 @@ function isStyleSheetFromSameOrigin(cssStyleSheet) {
 //Apply some css to help style the mobile content
 //done using an included css to use !important
 function applyBaseStyles() {
-  var cssStr = "html body {max-width: 800px !important; width: 66% !important; margin: 0 auto !important;}";
-  var styleElem = document.createElement("style");
+  let cssStr = "html body {max-width: 800px !important; width: 66% !important; margin: 0 auto !important;}";
+  let styleElem = document.createElement("style");
   document.querySelector("head").appendChild(styleElem);
   styleElem.innerHTML = cssStr;
 }
@@ -38,7 +39,7 @@ function applyBaseStyles() {
 //@imports must be at the top of the file
 function _applyToImports(css, callback) {
   rules = css.rules || css.cssRules;
-  for (var i=0; i<rules.length; i++) {
+  for (let i=0; i<rules.length; i++) {
     if (rules[i] instanceof CSSImportRule) {
       callback(rules[i]);
     } else {
@@ -113,30 +114,33 @@ function runMV() {
 // Will need to be an asynchronous depth first recursion
 function processSameDomainCss(css) {
 
-    try {
-        if ( _isCss(css) ) {
+  try {
+    if ( _isCss(css) ) {
 
-            //handle @imports in css
-            _applyToImports(css, function(rule){
-              //check for domain of @import
-              if (rule.href && isUrlAbsolute(rule.href)) {
-                //external domain
-                processExternalDomainCssFromUrl(rule.href);
-              } else {
-                processSameDomainCss(rule.styleSheet);
-              }
-            });
-
-            //Apply the new styling
-            let queries = getMediaQueries(css);
-            let seperatedQueries = seperateMQueriesToShowAndHide(queries);
-            show(seperatedQueries[0]);
-            hide(seperatedQueries[1]);
+      //handle @imports in css
+      _applyToImports(css, function(rule){
+        //check for domain of @import
+        if (rule.href && isUrlAbsolute(rule.href)) {
+          //external domain
+          processExternalDomainCssFromUrl(rule.href);
+        } else {
+          processSameDomainCss(rule.styleSheet);
         }
-    } catch (err) {
-        console.dir(err);
-        //FF doesn't let you inspect css loaded from other domains
+      });
+
+      // Apply the new styling
+      let queries = getMediaQueries(css);
+      let seperatedQueries = seperateMQueriesToShowAndHide(queries);
+      show(seperatedQueries[0]);
+      hide(seperatedQueries[1]);
+
+      // fix vw
+      replaceVwWithPx(css);
     }
+  } catch (err) {
+      console.dir(err);
+      //FF doesn't let you inspect css loaded from other domains
+  }
 }
 
 // Due to same domain policy, JS can't access the css rules of stylesheets loaded from external domains
@@ -179,23 +183,23 @@ function _processExternalStylesheetOnLoad(xhr) {
 
 /* Given a css, return an array of media rules in all the given csses */
 function getMediaQueries(css) {
-    var rules, mediaRules = [];
+  var rules, mediaRules = [];
 
-    try {
-      rules = css.rules || css.cssRules;
+  try {
+    rules = css.rules || css.cssRules;
 
-      // loop through each rule
-      for (let j in rules) {
-        if (rules[j] instanceof CSSMediaRule) {
-          mediaRules.push(rules[j]);
-        }
+    // loop through each rule
+    for (let j in rules) {
+      if (rules[j] instanceof CSSMediaRule) {
+        mediaRules.push(rules[j]);
       }
-    } catch (err) {
-        console.dir(err);
-        //FF doesn't let you inspect css loaded from other domains
     }
+  } catch (err) {
+      console.dir(err);
+      //FF doesn't let you inspect css loaded from other domains
+  }
 
-    return mediaRules;
+  return mediaRules;
 }
 
 //Return [[Queries to show], [Queries to hide]]

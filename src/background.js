@@ -117,11 +117,15 @@ var updateQuerySelectors = function(details) {
   if (details.frameId !== 0) return;
 
   if (isEnabled(details.url)) {
-    chrome.tabs.executeScript(details.tabId, {'file': "lib/mq.js"}, function () {
-      chrome.tabs.executeScript(details.tabId, {'file': 'lib/uri.js'}, function () {
-        chrome.tabs.executeScript(details.tabId, {'file': 'js/common.js'}, function () {
-          chrome.tabs.executeScript(details.tabId, {'file': 'js/mobile-view.js'}, function () {
-            chrome.tabs.executeScript(details.tabId, {'code': 'runMV()'});
+    chrome.tabs.executeScript(details.tabId, {'file': "lib/jquery.js"}, function () {
+      chrome.tabs.executeScript(details.tabId, {'file': "lib/mq.js"}, function () {
+        chrome.tabs.executeScript(details.tabId, {'file': 'lib/uri.js'}, function () {
+          chrome.tabs.executeScript(details.tabId, {'file': 'js/common.js'}, function () {
+            chrome.tabs.executeScript(details.tabId, {'file': 'js/mobile-view.js'}, function () {
+              chrome.tabs.executeScript(details.tabId, {'file': 'js/vw.js'}, function () {
+                chrome.tabs.executeScript(details.tabId, {'code': 'runMV()'});
+              });
+            });
           });
         });
       });

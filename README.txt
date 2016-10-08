@@ -40,7 +40,7 @@
     https://developer.chrome.com/extensions/webNavigation
 
     Known Issues:
-    * vw doesn't work - references screen width
+    * race condition on load - GM doesn't always get triggered
 
     Permissions:
       activeTab:                    get active tab details (url)
