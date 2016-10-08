@@ -1,9 +1,0 @@
-.import-domain-test {
-  background-color: orange;
-}
-.import-domain-test:after {content: "Desktop View";}
-
-@media (max-width: 400px) {
-  .import-domain-test {background-color: purple;}
-  .import-domain-test:after {content: "Mobile View";}
-}

@@ -26,8 +26,9 @@ function isStyleSheetFromSameOrigin(cssStyleSheet) {
 }
 
 //Apply some css to help style the mobile content
+//done using an included css to use !important
 function applyBaseStyles() {
-  var cssStr = "body {max-width: 800px !important; width: 66% !important; margin: 0 auto !important;}";
+  var cssStr = "html body {max-width: 800px !important; width: 66% !important; margin: 0 auto !important;}";
   var styleElem = document.createElement("style");
   document.querySelector("head").appendChild(styleElem);
   styleElem.innerHTML = cssStr;
