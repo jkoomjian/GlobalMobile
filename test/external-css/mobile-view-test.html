@@ -1,39 +1,48 @@
 <!DOCTYPE html>
 <html>
   <head>
+
+    <style>
+      .inline-test {background-color: orange;}
+      .inline-test:after {content: "Desktop View";}
+      @media (max-width: 400px) {
+        .inline-test {background-color: purple;}
+        .inline-test:after {content: "Mobile View";}
+      }
+    </style>
+
     <link rel="stylesheet" href="./test-style.css" />
     <!-- loaded from a different domain -->
     <link rel="stylesheet" href="http://127.0.0.1/js-experiments/MobileView/test/test2.css" />
-
-    <style>
-    </style>
-
-    <!-- <script type="text/javascript" src="../src/lib/mq.js"></script>
-    <script type="text/javascript" src="../src/lib/uri.js"></script>
-    <script type="text/javascript" src="../src/mobile-view.js"></script> -->
 
   </head>
 
   <body>
 
-    <div class="import-test">
+    <div class="inline-test">
       Test 1 -
+      <br>inline style test<br>
+    </div>
+
+    <div class="link-test">
+      Test 2 -
+      <br>linked css test<br>
+    </div>
+
+    <div class="import-test">
+      Test 3 -
       <br>@import test<br>
     </div>
 
     <div class="domain-test">
-      Test 2 -
+      Test 4 -
       <br>css from a different domain<br>
     </div>
 
     <div class="import-domain-test">
-      Test 3 -
+      Test 5 -
       <br>css @imported from a different domain<br>
     </div>
-
-    <script>
-      runMV();
-    </script>
 
   </body>
 

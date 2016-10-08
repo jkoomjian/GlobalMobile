@@ -16,3 +16,10 @@ body > div {
   height: 150px;
   box-sizing: border-box;
 }
+
+.link-test {background-color: orange;}
+.link-test:after {content: "Desktop View";}
+@media (max-width: 400px) {
+  .link-test {background-color: purple;}
+  .link-test:after {content: "Mobile View";}
+}
