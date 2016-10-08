@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="./style.css" />
+    <!-- loaded from a different domain -->
+    <!-- <link rel="stylesheet" href="http://127.0.0.1/js-experiments/MobileView/test/test2.css" /> -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <style>
+      .vw-inline {border: 1px dotted orange; width: 100vw;}
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class="vw-inline">
+      |<-- 100 vw (inline) -->|
+    </div>
+
+    <div class="vw-asset">
+      |<-- 100 vw (included asset) -->|
+    </div>
+
+    <div class="vw-external-asset">
+      |<-- 100 vw (asset from a different domain) -->|
+    </div>
+
+  </body>
+
+</html>

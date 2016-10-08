@@ -1,0 +1,11 @@
+@import url("./test3.css");
+
+.domain-test {
+  background-color: orange;
+}
+.domain-test:after {content: "Desktop View";}
+
+@media (max-width: 400px) {
+  .domain-test {background-color: purple;}
+  .domain-test:after {content: "Mobile View";}
+}
