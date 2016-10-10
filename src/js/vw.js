@@ -1,9 +1,9 @@
-/* 
+/*
  * Vw units mess up everything - they reference the real viewport with, not the
  * fake width.
  * Replace them with px
  */
-const vwRe = new RegExp(/([\w]+):\s*(\d+vw);/g);
+const vwRe = new RegExp(/([\w-]+):\s*(-?\d+(\.\d+)?vw);/g);
 
 function replaceVwWithPx(css) {
   _getVwRules(css, _updateVwRule);
@@ -14,7 +14,7 @@ function _getVwRules(css, callback) {
   let rules = css.rules || css.cssRules;
   for (let i=0; i<rules.length; i++) {
     if (rules[i] instanceof CSSStyleRule) {
-      if (rules[i].cssText.match(/\d+vw/)) {
+      if (rules[i].cssText.match(/\d+vw[;\s]/)) {
         callback(rules[i].cssText, rules[i]);
       }
     }
@@ -23,7 +23,6 @@ function _getVwRules(css, callback) {
 
 function _updateVwRule(cssText, rule) {
   try {
-
     // get the values to update
     let selector = cssText.match(/^(.+?)\s*\{/)[1];
     let r, vwProps = {};

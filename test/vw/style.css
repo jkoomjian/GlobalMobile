@@ -2,4 +2,15 @@ body {border: 1px solid blue; margin: 0;}
 body > div {background-color: red; margin: 3em 0; position: relative;}
 body > div:before {content: '50%'; position: absolute; left: 50%;}
 body .vw-asset {border: 1px dotted green; width: 100vw;}
-body .vw-external-asset {border: 1px dotted purple; width: 100vw; height: 10vw;}
+body .vw-external-asset {
+  border: 1px dotted purple;
+  width: 100vw; height: 10vw;
+  /* test css w/decimals */
+  font-size: 1.66vw;
+  /* data urls often have 'vw' in them */
+  content: 'adsf234vwasdf';
+  /* negative values */
+  left: -33vw;
+  /* test css rules w/multiple values - not yet supported */
+  text-shadow: rgb(0, 0, 0) 0px 0px 12vw;
+}
