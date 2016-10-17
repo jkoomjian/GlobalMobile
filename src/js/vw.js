@@ -5,23 +5,21 @@
  */
 const vwRe = new RegExp(/([\w-]+):\s*(-?\d+(\.\d+)?vw);/g);
 
+// Passes rules with vw units to _convertVwToPx, applies the updated styles
 function replaceVwWithPx(css) {
-  _getVwRules(css, _updateVwRule);
-}
-
-// Passes rules with vw units to callback - params: cssText, rule
-function _getVwRules(css, callback) {
   let rules = css.rules || css.cssRules;
   for (let i=0; i<rules.length; i++) {
     if (rules[i] instanceof CSSStyleRule) {
       if (rules[i].cssText.match(/\d+vw[;\s]/)) {
-        callback(rules[i].cssText, rules[i]);
+        let [selector, vwProps] = _convertVwToPx(rules[i].cssText, rules[i]);
+        // apply new px value to elem
+        $(selector).css(vwProps);
       }
     }
   }
 }
 
-function _updateVwRule(cssText, rule) {
+function _convertVwToPx(cssText) {
   try {
     // get the values to update
     let selector = cssText.match(/^(.+?)\s*\{/)[1];
@@ -35,14 +33,12 @@ function _updateVwRule(cssText, rule) {
     let pxPerVw = Math.floor(800 / 100);
 
     Object.keys(vwProps).forEach( key => {
-      let vwVal = parseInt(vwProps[key].replace('vw', ''), 10);
+      let vwVal = parseFloat(vwProps[key].replace('vw', ''));
       let pxVal = Math.floor(vwVal * pxPerVw);
       vwProps[key] = pxVal + "px";
     });
 
-    // apply new px value to elem
-    $(selector).css(vwProps);
-
+    return [selector, vwProps];
   } catch (ex) {
     console.table(ex);
   }
