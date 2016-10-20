@@ -46,10 +46,9 @@ describe("VW units should be replaced with px for", function() {
   it("not for content w/vw in it", function() {
     expect( _convertVwToPx("body {content: 'adsf234vwasdf'}") ).toMatchCss( ["body", {}] );
   });
-  // //TODO not yet supported
-  // it("multiple vws in statement", function() {
-  //   expect( _convertVwToPx("body {width: 2vw; height: 4vw}") ).toMatchCss( ["body", {width: '16px', height: '32px'}] );
-  // });
+  it("multiple vws in statement", function() {
+    expect( _convertVwToPx("body {width: 2vw; height: 4vw;}") ).toMatchCss( ["body", {width: '16px', height: '32px'}] );
+  });
   // //TODO not yet supported
   // it("css rules w/multiple values", function() {
   //   expect( _convertVwToPx("body {text-shadow: rgb(0, 0, 0) 0px 0px 12vw;}") ).toMatchCss( ["body", {'text-shadow': 'rgb(0, 0, 0) 0px 0px 12vw'}] );
