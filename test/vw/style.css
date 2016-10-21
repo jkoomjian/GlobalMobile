@@ -6,11 +6,12 @@ body .vw-external-asset {
   border: 1px dotted purple;
   width: 100vw; height: 10vw;
   /* test css w/decimals */
-  font-size: 1.66vw;
+  font-size: 2vw;
   /* data urls often have 'vw' in them */
   content: 'adsf234vwasdf';
   /* negative values */
   left: -33vw;
-  /* test css rules w/multiple values - not yet supported */
-  text-shadow: rgb(0, 0, 0) 0px 0px 12vw;
+  transform: translate(33vw, 0);
+  /* test css rules w/multiple values */
+  text-shadow: rgb(0, 0, 0) 0px 0px 1vw;
 }
