@@ -94,8 +94,8 @@ function runMV() {
 
     var parent = docCsses[i].ownerNode;
     var desc = parent.tagName.toUpperCase() == "STYLE" ? "inline style" : parent.href;
-    console.log(`processing css: ${desc}`);
-    console.dir(docCsses[i]);
+    // console.log(`processing css: ${desc}`);
+    // console.dir(docCsses[i]);
 
     if (isStyleSheetFromSameOrigin(docCsses[i])) {
       processSameDomainCss(docCsses[i]);
@@ -153,7 +153,7 @@ function processExternalDomainCss(css) {
 }
 
 function processExternalDomainCssFromUrl(url) {
-  console.log("requesting: " + url);
+  // console.log("requesting: " + url);
   var xhr = new XMLHttpRequest();
   xhr.addEventListener('load', _processExternalStylesheetOnLoad);
   xhr.open("GET", url, true);
@@ -217,7 +217,7 @@ function seperateMQueriesToShowAndHide(mQueries) {
 
     //Test if this mediaquery is valid for mobile
     appearsInMobile = matchQuery(mediaText, {type : 'screen', width: '299px'});
-    console.log( (appearsInMobile ? 'show' : 'hide') + ": " + mediaText );
+    // console.log( (appearsInMobile ? 'show' : 'hide') + ": " + mediaText );
     (appearsInMobile ? show : hide).push(mQueries[i]);
   }
   return [show, hide];

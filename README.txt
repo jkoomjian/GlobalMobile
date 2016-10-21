@@ -41,7 +41,6 @@
 
     Known Issues:
     * race condition on load - GM doesn't always get triggered
-    * doesn't rewrite css rules w/multiple units - ex.: text-shadow: rgb(0, 0, 0) 0px 0px 12vw;
 
     Permissions:
       activeTab:                    get active tab details (url)
