@@ -31,6 +31,8 @@ function loadCachedData() {
 //Cache the isEnabled result - will be called many times per request
 function isEnabled(url) {
 
+  //console.log(`GM is enabled: ${_isEnabled(url)} cached: ${isRequestEnabledTmp !== undefined} callee: ${arguments.callee.caller.name}`);
+
   if (isRequestEnabledTmp !== undefined) {
     return isRequestEnabledTmp;
   }
@@ -81,18 +83,20 @@ function isInList(list, url) {
   return list[domain] == "domain" || (list[domain] == "nohome" && !isHomepage(url));
 }
 
-function afterPageLoad(url) {
+function afterPageLoad(url, tabId) {
   // Update the icon once after page load
-  updateIcon(url);
+  updateIcon(url, tabId);
   //vars are scoped to extension, are persisted across pages, so unset
   isRequestEnabledTmp = undefined;
   disableOnce = runOnce = false;
 }
 
 
-function updateIcon(url) {
-  var iconPath = 'img/' + (isEnabled(url) ? 'icon_active.png' : 'icon_inactive.png');
-  chrome.browserAction.setIcon({path: iconPath});
+function updateIcon(url, tabId) {
+  // var iconPath = 'img/' + (isEnabled(url) ? 'icon_active.png' : 'icon_inactive.png');
+  // chrome.browserAction.setIcon({path: iconPath, tabId: tabId});
+  chrome.browserAction.setBadgeText({text: "On", tabId: tabId});
+  chrome.browserAction.setBadgeBackgroundColor({color: [255, 0, 0, 1], tabId: tabId});
 }
 
 
@@ -133,7 +137,7 @@ var updateQuerySelectors = function(details) {
   }
 
   // Should be finished loading now
-  afterPageLoad(details.url);
+  afterPageLoad(details.url, details.tabId);
 };
 
 
