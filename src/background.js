@@ -31,7 +31,7 @@ function loadCachedData() {
 //Cache the isEnabled result - will be called many times per request
 function isEnabled(url) {
 
-  //console.log(`GM is enabled: ${_isEnabled(url)} cached: ${isRequestEnabledTmp !== undefined} callee: ${arguments.callee.caller.name}`);
+  console.log(`GM is enabled: ${_isEnabled(url)} cached: ${isRequestEnabledTmp !== undefined} callee: ${arguments.callee.caller.name}`);
 
   if (isRequestEnabledTmp !== undefined) {
     return isRequestEnabledTmp;
@@ -95,8 +95,10 @@ function afterPageLoad(url, tabId) {
 function updateIcon(url, tabId) {
   // var iconPath = 'img/' + (isEnabled(url) ? 'icon_active.png' : 'icon_inactive.png');
   // chrome.browserAction.setIcon({path: iconPath, tabId: tabId});
-  chrome.browserAction.setBadgeText({text: "On", tabId: tabId});
-  chrome.browserAction.setBadgeBackgroundColor({color: [255, 0, 0, 1], tabId: tabId});
+  if (isEnabled(url)) {
+    chrome.browserAction.setBadgeText({text: "On", tabId: tabId});
+    chrome.browserAction.setBadgeBackgroundColor({color: [255, 0, 0, 1], tabId: tabId});    
+  }
 }
 
 
