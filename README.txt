@@ -49,3 +49,10 @@
       http://*/*", "https://*/*:    ajax requests
       storage:                      storage for options
       tabs:                         close current tab
+
+TODO:
+* generate for FF
+** build script?
+** css in js?
+* switch to react?
+* rename, better description
