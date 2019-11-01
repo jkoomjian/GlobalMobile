@@ -1,12 +1,7 @@
 .import-test {
-  background-color: orange;
-}
-
-.import-test:after {
-  content: "Desktop View";
+  background-color: red;
 }
 
 @media (max-width: 400px) {
-  .import-test {background-color: purple;}
-  .import-test:after {content: "Mobile View";}
+  .import-test {background-color: green;}
 }

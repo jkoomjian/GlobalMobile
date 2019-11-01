@@ -1,7 +1,7 @@
 /*----------- Shared ----------------*/
 
-//Save the domain to the given list
-//Save flag can be;
+// Save the domain to the given list
+// Save flag can be;
 // domain - run on entire domain
 // nohome - run on all pages in domain except homepage
 // deleted - do not run on domain
@@ -11,19 +11,17 @@ function saveChangeToList(listName, siteUrl, callback, saveFlag) {
   if (["deleted", "domain", "nohome"].indexOf(saveFlag) < 0) throw "Invalid save flag";
 
   //Update local cache
-  var listCache = window[ listName + "Cache"];
-  listCache[domain] = saveFlag;
+  // TODO remove cache?
+  // var listCache = window[ listName + "Cache"];
+  // listCache[domain] = saveFlag;
 
   //Update persistent storage
-  var toGet = {};
-  toGet[listName] = {};
-  chrome.storage.sync.get(toGet, function(items) {
+  chrome.storage.sync.get({ [listName]: {} }, function(items) {
+    console.log('at save', listName, items);
     let currList = items[listName];
     currList[domain] = saveFlag;
 
-    var toSet = {};
-    toSet[listName] = currList;
-    chrome.storage.sync.set(toSet, function() {
+    chrome.storage.sync.set({[listName]: currList}, function() {
       if (callback) callback();
     });
 

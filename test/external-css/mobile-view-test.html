@@ -1,47 +1,50 @@
 <!DOCTYPE html>
 <html>
   <head>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-      .inline-test {background-color: orange;}
-      .inline-test:after {content: "Desktop View";}
+      .inline-test {background-color: red;}
       @media (max-width: 400px) {
-        .inline-test {background-color: purple;}
-        .inline-test:after {content: "Mobile View";}
+        .inline-test {background-color: green;}
       }
     </style>
 
     <link rel="stylesheet" href="./test-style.css" />
     <!-- loaded from a different domain -->
-    <link rel="stylesheet" href="http://127.0.0.1/js-experiments/MobileView/test/test2.css" />
+    <link rel="stylesheet" href="http://127.0.0.1/GlobalMobile/test/external-css/test2.css" />
 
   </head>
 
   <body>
 
+    <div>
+      Ensure that GM catches all mobile css, regardless of how it is
+      included in the doc.
+    </div>
+
     <div class="inline-test">
-      Test 1 -
-      <br>inline style test<br>
+      <h3>Test 1</h3>
+      Inline style test (&lt;style&gt;&lt;/style&gt;)
     </div>
 
     <div class="link-test">
-      Test 2 -
-      <br>linked css test<br>
+      <h3>Test 2</h3>
+      Linked css test (&lt;link rel="stylesheet" /&gt;)
     </div>
 
     <div class="import-test">
-      Test 3 -
-      <br>@import test<br>
+      <h3>Test 3</h3>
+      @import test (@import "./test1.css";)
     </div>
 
     <div class="domain-test">
-      Test 4 -
-      <br>css from a different domain<br>
+      <h3>Test 4</h3>
+      CSS from a different domain
     </div>
 
     <div class="import-domain-test">
-      Test 5 -
-      <br>css @imported from a different domain<br>
+      <h3>Test 5</h3>
+      CSS @imported from a different domain
     </div>
 
   </body>

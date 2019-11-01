@@ -2,9 +2,9 @@
   "manifest_version": 2,
 
   "name": "Global Mobile",
-  "version": "1.1",
+  "version": "1.29",
   "description": "Make all web pages display as they would on a mobile device",
-  "options_page": "options/options.html",
+  "options_page": "options-react/options.html",
   "icons": { "16": "img/icon-16.png",
               "48": "img/icon-48.png",
               "128": "img/icon-128.png" },
@@ -14,12 +14,11 @@
     "default_popup": "popup/popup.html",
     "default_title": "Global Mobile - view the mobile version of this page"
   },
-
+  "content_security_policy": "script-src 'self' 'sha256-iFeb/IWOyb8lDRA482iw1oWzokfEBvVGiNzYnhE0Fos='",
   "background": {
     "scripts": ["lib/uri.js", "js/common.js", "background.js"],
     "persistent": true
   },
-
   "permissions": [
     "activeTab",
     "webRequest", "webRequestBlocking",

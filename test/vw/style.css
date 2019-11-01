@@ -5,6 +5,7 @@ body .vw-asset {border: 1px dotted green; width: 100vw;}
 body .vw-external-asset {
   border: 1px dotted purple;
   width: 100vw; height: 10vw;
+  /** Verify other css properties with vw don't get modified **/
   /* test css w/decimals */
   font-size: 2vw;
   /* data urls often have 'vw' in them */
