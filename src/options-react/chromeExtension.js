@@ -6,7 +6,7 @@
  */
 
 
- // Pull in methods from background page
+// Pull in methods from background page
 // (but not jquery - else jquery will operate on the backgroundPage dom)
 const gmbp = chrome.extension.getBackgroundPage();
 
@@ -16,7 +16,7 @@ window.cExt = {
       Object.fromEntries(
         Object.entries(data || {}).filter(([url, saveFlag]) => gmbp.isActiveDomain(saveFlag))
       )
-    )
+    );
 
     chrome.storage.sync.get(null, function (storage) {
       const initialState = {
@@ -24,7 +24,7 @@ window.cExt = {
         autoRun: !!storage['autoRun'],
         whitelist: getActiveEntries(storage['whitelist']),
         blacklist: getActiveEntries(storage['blacklist']),
-      }
+      };
       callback(initialState);
     });
   },
@@ -35,15 +35,15 @@ window.cExt = {
   },
 
   addSite(siteUrl, shouldSkipHome, listName) {
-    var saveFlag = "domain";
+    var saveFlag = 'domain';
     if (shouldSkipHome) {
-      saveFlag = "nohome";
+      saveFlag = 'nohome';
     }
     gmbp.saveChangeToList(listName, siteUrl, null, saveFlag);
   },
 
   deleteSite(siteUrl, listName) {
-    gmbp.saveChangeToList(listName, siteUrl, null, "deleted");
+    gmbp.saveChangeToList(listName, siteUrl, null, 'deleted');
   }
 
 }

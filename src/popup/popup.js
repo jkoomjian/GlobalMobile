@@ -37,21 +37,21 @@ function _popupUpdateList(listName, toDelete) {
   chrome.tabs.query({active: true, currentWindow: true }, tabs => {
     gmbp.saveChangeToList(listName, tabs[0].url, function() {
       _popupReload(window);
-    }, toDelete ? "deleted" : "domain");
+    }, toDelete ? 'deleted' : 'domain');
   });
 }
 
 function popupShowRelevantButtons() {
   var listName;
   if (gmbp.autoRunCache) {
-    $(".whitelist").hide();
-    listName = "blacklist";
+    $('.whitelist').hide();
+    listName = 'blacklist';
   } else {
-    $(".blacklist").hide();
-    listName = "whitelist";
+    $('.blacklist').hide();
+    listName = 'whitelist';
   }
   isOnList(listName, function(onList) {
-    $( (onList ? ".off-" : ".on-") + listName).hide();
+    $( (onList ? '.off-' : '.on-') + listName).hide();
   });
 }
 
@@ -63,14 +63,14 @@ function _popupReload() {
 /*----------- Run! ----------------*/
 document.addEventListener('DOMContentLoaded', function() {
   [
-    [".run-once", popupRunOnce],
-    [".disable-once", popupDisableOnce],
-    ["#whitelist-site", popupAddWhitelist],
-    ["#unwhitelist-site", popupRemoveWhitelist],
-    ["#blacklist-site", popupAddBlacklist],
-    ["#unblacklist-site", popupRemoveBlacklist]
+    ['.run-once', popupRunOnce],
+    ['.disable-once', popupDisableOnce],
+    ['#whitelist-site', popupAddWhitelist],
+    ['#unwhitelist-site', popupRemoveWhitelist],
+    ['#blacklist-site', popupAddBlacklist],
+    ['#unblacklist-site', popupRemoveBlacklist]
   ].forEach( params => {
-    $(".content").on("click", params[0], params[1]);
+    $('.content').on('click', params[0], params[1]);
   });
   popupShowRelevantButtons();
 });

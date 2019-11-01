@@ -7,7 +7,7 @@ const App = props => {
     autoRun: false,
     whitelist: {},
     blacklist: {},
-  }
+  };
 
   const [state, setState] = React.useState(initialState);
   const { showAddNew, autoRun, whitelist, blacklist } = state;
@@ -22,14 +22,14 @@ const App = props => {
 
   const updateShowAddNew = val => {
     setState({ ...state, showAddNew: val });
-  }
+  };
 
   const toggleAutoRun = () => {
     // update chrome
     if (window.cExt) cExt.saveAutoRun(!state.autoRun);
     // update state
     setState({ ...state, autoRun: !state.autoRun });
-  }
+  };
 
   // You can only call setState once per invocation / event
   // Otherwise the state will not be updated by useState and the 
@@ -43,7 +43,7 @@ const App = props => {
       [listName]: { ...state[listName], [url]: shouldSkipHome },
       showAddNew: false
     });
-  }
+  };
 
   const deleteSite = (urlToDelete) => {
     const listName = state.autoRun ? 'blacklist' : 'whitelist';
@@ -54,7 +54,7 @@ const App = props => {
       ...state,
       [listName]: listClone
     });
-  }
+  };
 
   return (
     <React.Fragment>
@@ -63,19 +63,19 @@ const App = props => {
       <CloseButton />
       <AddSitePanel {...{ showAddNew, updateShowAddNew, autoRun, addSite }} />
     </React.Fragment>
-  )
+  );
 };
 
 /** RunByDefault */
 const RunByDefault = ({ autoRun, toggleAutoRun }) => {
   return (
-    <div className="always-on subsetting">
+    <div className='always-on subsetting'>
       <h3>Run By Default</h3>
-      <div className="always-on-options">
-        <div className="form">
-          <input type="checkbox" id="autoRunCheckbox" checked={!!autoRun} onChange={toggleAutoRun} />
+      <div className='always-on-options'>
+        <div className='form'>
+          <input type='checkbox' id='autoRunCheckbox' checked={!!autoRun} onChange={toggleAutoRun} />
         </div>
-        <label for="autoRunCheckbox" className="label">
+        <label for='autoRunCheckbox' className='label'>
           GlobalMobile runs automatically on pages which have been added to the whitelist.
           <br />
           Checking this box reverses this behavior -
@@ -90,18 +90,18 @@ const RunByDefault = ({ autoRun, toggleAutoRun }) => {
 /** SiteList */
 const SiteList = ({ updateShowAddNew, autoRun, whitelist, blacklist, deleteSite }) => {
   return (
-    <div className="whitelist subsetting">
+    <div className='whitelist subsetting'>
 
 
       <div>
         <h3>{!autoRun ? 'Whitelist' : 'Blacklist'}</h3>
-        <div className="subtext">
+        <div className='subtext'>
           {!autoRun ? 'GlobalMobile will run on the sites below:' : 'GlobalMobile will run on evey site EXCEPT those below:'}
         </div>
       </div>
 
-      <div className="wl-list">
-        <div className="wl-sites">
+      <div className='wl-list'>
+        <div className='wl-sites'>
 
           <div>
             {
@@ -110,17 +110,17 @@ const SiteList = ({ updateShowAddNew, autoRun, whitelist, blacklist, deleteSite 
           </div>
 
         </div>
-        <button id="add-new" className="wl-add" onClick={() => updateShowAddNew(true)}>Add New</button>
+        <button id='add-new' className='wl-add' onClick={() => updateShowAddNew(true)}>Add New</button>
       </div>
     </div>
   );
-}
+};
 
 /** Site */
 const Site = ({url, deleteSite}) => (
-  <div className="wl-site">
-    <div className="wls-host">{url}</div>
-    <div className="wls-delete" onClick={() => deleteSite(url)}>X</div>
+  <div className='wl-site'>
+    <div className='wls-host'>{url}</div>
+    <div className='wls-delete' onClick={() => deleteSite(url)}>X</div>
   </div>
 );
 
@@ -130,23 +130,23 @@ const CloseButton = props => {
     chrome.tabs.getCurrent(tab => {
       chrome.tabs.remove(tab.id);
     });
-  }
+  };
   return (
-    <div className="finished-row">
-      <button id="finished" onClick={closeOptions}>Close</button>
+    <div className='finished-row'>
+      <button id='finished' onClick={closeOptions}>Close</button>
     </div>
   );
-}
+};
 
 /** AddSitePanel */
 const AddSitePanel = ({ showAddNew, updateShowAddNew, autoRun, addSite }) => {
   const [state, setState] = React.useState({ url: undefined, shouldSkipHome: false });
 
   const closeAddNew = event => {
-    if (!event || event.target.classList.contains("lightbox") || event.target.classList.contains("close")) {
+    if (!event || event.target.classList.contains('lightbox') || event.target.classList.contains('close')) {
       updateShowAddNew(false);
     }
-  }
+  };
 
   const handleFormChange = e => {
     const name = e.target.name;
@@ -168,41 +168,41 @@ const AddSitePanel = ({ showAddNew, updateShowAddNew, autoRun, addSite }) => {
   let runOnHomepage = null;
   if (!autoRun) {
     runOnHomepage = (
-      <div className="options">
-        <input type="checkbox" id="skipHomeCheckbox" name="shouldSkipHome" checked={state.shouldSkipHome} onChange={event => handleFormChange(event)} />
-        <label for="skipHomeCheckbox">
+      <div className='options'>
+        <input type='checkbox' id='skipHomeCheckbox' name='shouldSkipHome' checked={state.shouldSkipHome} onChange={event => handleFormChange(event)} />
+        <label for='skipHomeCheckbox'>
           Don't run on homepage
-            <div className="subtext">(Ex. will run on nytimes.com/article but not nytimes.com/)</div>
+          <div className='subtext'>(Ex. will run on nytimes.com/article but not nytimes.com/)</div>
         </label>
       </div>
     );
   }
 
   return (
-    <div className="lightbox" onClick={closeAddNew}>
-      <div className="add-panel">
-        <div className="close">X</div>
+    <div className='lightbox' onClick={closeAddNew}>
+      <div className='add-panel'>
+        <div className='close'>X</div>
         <h4>Add Site</h4>
-        <div className="subtext">
+        <div className='subtext'>
           Add a new site to the {!autoRun ? 'whitelist' : 'blacklist'}
         </div>
-        <div className="form-fields">
+        <div className='form-fields'>
           <input
-            type="text"
-            id="new-site"
-            name="url"
+            type='text'
+            id='new-site'
+            name='url'
             value={state.url}
-            placeholder="http://www.google.com"
-            tabindex="1"
+            placeholder='http://www.google.com'
+            tabindex='1'
             onChange={event => handleFormChange(event)}
             className={getUrlValidationClass()}
           />
           <input {...{
             ...isDisabled,
-            type: "submit",
-            id: "new-site-submit",
-            value: "Add",
-            tabindex: "2",
+            type: 'submit',
+            id: 'new-site-submit',
+            value: 'Add',
+            tabindex: '2',
             onClick: (() => {
               addSite(state.url, state.shouldSkipHome);
             })
