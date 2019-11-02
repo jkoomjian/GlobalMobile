@@ -8,12 +8,12 @@ function isOnList(listName, callback) {
 
 /*----------- Popup ----------------*/
 function popupRunOnce() {
-  gmbp.runOnce = true;
+  gmbp.gmSync.runOnce = true;
   _popupReload();
 }
 
 function popupDisableOnce() {
-  gmbp.disableOnce = true;
+  gmbp.gmSync.disableOnce = true;
   _popupReload();
 }
 
@@ -43,7 +43,7 @@ function _popupUpdateList(listName, toDelete) {
 
 function popupShowRelevantButtons() {
   var listName;
-  if (gmbp.autoRunCache) {
+  if (gmbp.gmSync.autoRun) {
     $('.whitelist').hide();
     listName = 'blacklist';
   } else {

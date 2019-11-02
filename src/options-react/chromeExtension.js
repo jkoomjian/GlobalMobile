@@ -30,7 +30,7 @@ window.cExt = {
   },
 
   saveAutoRun(val) {
-    gmbp.autoRunCache = val;
+    gmbp.gmSync.autoRun = val;
     chrome.storage.sync.set({ autoRun: val });
   },
 

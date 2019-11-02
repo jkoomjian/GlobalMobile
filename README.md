@@ -6,7 +6,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-    Browse the internet without getting ADD
+    # Browse the internet without getting ADD
 
     Some websites have an overwhelming number of images and headlines and ads
     all screaming for your attention simultaneously. Our poor brains spin into
@@ -52,11 +52,13 @@
 
 TODO:
 +* get running
-** eslint
-** split up scripts
-** fix mobile-view-test
++* eslint
++* cleanup, remove cache?
+* not running!
+* split up scripts
 * generate for FF
 * rename, better description
+
 
 --------------
 

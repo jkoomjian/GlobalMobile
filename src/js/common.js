@@ -1,19 +1,20 @@
-/*----------- Shared ----------------*/
+/*----------- Code Shared Between background.js and options.js ----------------*/
 
-// Save the domain to the given list
-// Save flag can be;
-// domain - run on entire domain
-// nohome - run on all pages in domain except homepage
-// deleted - do not run on domain
+/**
+ * Save the domain to the given list
+ * Save flag can be;
+ * domain - run on entire domain
+ * nohome - run on all pages in domain except homepage
+ * deleted - do not run on domain
+ */
 function saveChangeToList(listName, siteUrl, callback, saveFlag) {
   var domain = getDomain(siteUrl);
   if (saveFlag === undefined) saveFlag = 'domain';
   if (['deleted', 'domain', 'nohome'].indexOf(saveFlag) < 0) throw 'Invalid save flag';
 
-  //Update local cache
-  // TODO remove cache?
-  // var listCache = window[ listName + 'Cache'];
-  // listCache[domain] = saveFlag;
+  // Update local cache (in window, not chrome.sync)
+  var list = window.gmSync[listName];
+  list[domain] = saveFlag;
 
   //Update persistent storage
   chrome.storage.sync.get({ [listName]: {} }, function(items) {

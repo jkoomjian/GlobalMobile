@@ -95,7 +95,7 @@ optionsApp.controller('optionsController', function($scope, $route, $routeParams
 
   function saveAutoRun() {
     var checkbox = document.getElementById("autoRunCheckbox");
-    gmbp.autoRunCache = checkbox.checked;
+    gmbp.gmSync.autoRun = checkbox.checked;
     chrome.storage.sync.set({autoRun: checkbox.checked ? "true" : ""});
   }
 
