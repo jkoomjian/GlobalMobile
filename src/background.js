@@ -31,9 +31,16 @@ function gmInit() {
 
 /*-------------- On Page Load ----------------*/
 function onPageLoad(details) {
-  updateQuerySelectors(details);
-  // Update the icon once after page load
-  updateIcon(details.url, details.tabId);
+
+  //ignore frames - only run if this is the main frame
+  if (details.frameId !== 0) return;
+
+  if (isEnabled(details.url)) {
+    updateQuerySelectors(details);
+    // Update the icon once after page load
+    updateIcon(details.url, details.tabId);
+  }
+  
   // window vars are scoped to extension, are persisted across pages, so unset
   window.gmSync.isRequestEnabled = undefined;
   window.gmSync.disableOnce = false;
@@ -42,35 +49,28 @@ function onPageLoad(details) {
 
 // Called when the page loading is complete
 // Running in Chrome Extension Env.
-var updateQuerySelectors = function (details) {
-
-  //ignore frames - tabId is important to keep - otherwise frames will break everything
-  if (details.frameId !== 0) return;
-
-  if (isEnabled(details.url)) {
-    chrome.tabs.executeScript(details.tabId, { 'file': 'lib/jquery.js' }, function () {
-      chrome.tabs.executeScript(details.tabId, { 'file': 'lib/mq.js' }, function () {
-        chrome.tabs.executeScript(details.tabId, { 'file': 'lib/uri.js' }, function () {
-          chrome.tabs.executeScript(details.tabId, { 'file': 'js/common.js' }, function () {
-            chrome.tabs.executeScript(details.tabId, { 'file': 'js/mobile-view.js' }, function () {
-              chrome.tabs.executeScript(details.tabId, { 'file': 'js/vw.js' }, function () {
-                chrome.tabs.executeScript(details.tabId, { 'code': 'runMV()' });
-              });
+function updateQuerySelectors(details) {
+  console.log('Calling runMV');
+  chrome.tabs.executeScript(details.tabId, { 'file': 'lib/jquery.js' }, function () {
+    chrome.tabs.executeScript(details.tabId, { 'file': 'lib/mq.js' }, function () {
+      chrome.tabs.executeScript(details.tabId, { 'file': 'lib/uri.js' }, function () {
+        chrome.tabs.executeScript(details.tabId, { 'file': 'js/common.js' }, function () {
+          chrome.tabs.executeScript(details.tabId, { 'file': 'js/mobile-view.js' }, function () {
+            chrome.tabs.executeScript(details.tabId, { 'file': 'js/vw.js' }, function () {
+              chrome.tabs.executeScript(details.tabId, { 'code': 'runMV()' });
             });
           });
         });
       });
     });
-  }
-};
+  });
+}
 
 function updateIcon(url, tabId) {
   // var iconPath = 'img/' + (isEnabled(url) ? 'icon_active.png' : 'icon_inactive.png');
   // chrome.browserAction.setIcon({path: iconPath, tabId: tabId});
-  if (isEnabled(url)) {
-    chrome.browserAction.setBadgeText({ text: 'On', tabId: tabId });
-    chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 1], tabId: tabId });
-  }
+  chrome.browserAction.setBadgeText({ text: 'On', tabId: tabId });
+  chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 1], tabId: tabId });
 }
 
 
@@ -79,7 +79,7 @@ function updateIcon(url, tabId) {
 //Cache the isEnabled result - will be called many times per request
 function isEnabled(url) {
 
-  // console.log(`GM is enabled: ${_isEnabled(url)} cached: ${window.gmSync.isRequestEnabled !== undefined} callee: ${arguments.callee.caller.name}`);
+  // console.log(`at isEnabled: cached: ${window.gmSync.isRequestEnabled !== undefined} callee: ${arguments.callee.caller.name}`, window.gmSync);
 
   if (window.gmSync.isRequestEnabled !== undefined) {
     return window.gmSync.isRequestEnabled;
@@ -91,7 +91,7 @@ function isEnabled(url) {
 
 // Run GM on this page?
 function _isEnabled(url) {
-  console.log({gmSync: window.gmSync, url, domain: getDomain(url), isHomepage: isHomepage(url)});
+  // console.log('At _isEnabled', {gmSync: window.gmSync, url, domain: getDomain(url), isHomepage: isHomepage(url)});
 
   // If runOnce is true, run gm - set in popup.js
   if (window.gmSync.runOnce) {

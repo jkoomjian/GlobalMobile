@@ -50,7 +50,7 @@ function getDomain(url) {
   var domain = a.hostname;
 
   // Remove subdomain, if present
-  if (domain.split('.').length > 2) {
+  if (domain.split('.').length === 3) {
     let splits = domain.split('.');
     domain = splits[ splits.length - 2 ] + '.' + splits[ splits.length - 1 ];
   }

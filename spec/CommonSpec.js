@@ -5,6 +5,7 @@ describe('GetDomain should', function() {
     expect( getDomain('http://www.jonathankoomjian.com/') ).toBe(jkDomain);
     expect( getDomain('http://www.jonathankoomjian.com') ).toBe(jkDomain);
     expect( getDomain('http://m.jonathankoomjian.com') ).toBe(jkDomain);
+    expect(getDomain('http://127.0.0.1/GlobalMobile/test/external-css/test2.css')).toBe('127.0.0.1');
   });
   it('handle urls w/out http', function() {
     expect( getDomain('www.jonathankoomjian.com/projects/') ).toBe(jkDomain);

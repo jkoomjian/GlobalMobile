@@ -8,37 +8,42 @@
 /* ---------- Helpers ----------------*/
 
 function _isCss(stylesheetObj) {
-  return (typeof stylesheetObj === "object" && (stylesheetObj.rules || stylesheetObj.cssRules));
+  return (typeof stylesheetObj === 'object' && (stylesheetObj.rules || stylesheetObj.cssRules));
 }
 
 //Given an array of css selectors, and a media query rule, set the selectors to use the rule
 function _applyMediaQuery(mQueries, mediaQueryText) {
   mQueries.forEach( mQuery => {
     try {
-        mQuery.media.mediaText = mediaQueryText;
+      mQuery.media.mediaText = mediaQueryText;
     } catch (err) {
-        mQuery.conditionText = mediaQueryText;
+      mQuery.conditionText = mediaQueryText;
     }
   });
 }
 
 function isStyleSheetFromSameOrigin(cssStyleSheet) {
-  return !(cssStyleSheet.rules === null && cssStyleSheet.href);
+  try {
+    const fromDifferentOrigin = cssStyleSheet.href && (getDomain(cssStyleSheet.href) !== getDomain(window.location.href));
+    return !fromDifferentOrigin;
+  } catch(e) {
+    return false;
+  }
 }
 
 //Apply some css to help style the mobile content
 //done using an included css to use !important
 function applyBaseStyles() {
-  let cssStr = "html body {max-width: 800px !important; width: 66% !important; margin: 0 auto !important;}";
-  let styleElem = document.createElement("style");
-  document.querySelector("head").appendChild(styleElem);
+  let cssStr = 'html body {max-width: 800px !important; width: 66% !important; margin: 0 auto !important;}';
+  let styleElem = document.createElement('style');
+  document.querySelector('head').appendChild(styleElem);
   styleElem.innerHTML = cssStr;
 }
 
 //Run callback(cssRule) on each @import statement in css's rules
 //@imports must be at the top of the file
 function _applyToImports(css, callback) {
-  rules = css.rules || css.cssRules;
+  let rules = css.rules || css.cssRules;
   for (let i=0; i<rules.length; i++) {
     if (rules[i] instanceof CSSImportRule) {
       callback(rules[i]);
@@ -55,18 +60,18 @@ function getAbsoluteUrl(relativeUrl, rootUrl) {
 }
 
 function isUrlAbsolute(url) {
-  return URI(url).is("absolute");
+  return URI(url).is('absolute');
 }
 
 //Given a raw string of css containing @imports with relative urls,
-//like @import url('./style.css') or @import "/style/main.css", and the base url,
+//like @import url('./style.css') or @import '/style/main.css', and the base url,
 //update all the urls to be correct and fully qualified.
 function absolutizeAllRelativeUrlsInCss(baseUrl, cssStr) {
   var importRegex = /@import (["'])([^"']+)\1|@import url\((["']?)([^"')]+)\3\)/gi;
   // console.log("re baseUrl: " + baseUrl);
   // console.log(`input:\n ${cssStr}`);
   cssStr = cssStr.replace(importRegex, function(importRule){
-    // console.log("re importRule: " + importRule);
+    // console.log('re importRule: ' + importRule);
     var url = arguments[2] || arguments[4];
     // console.log('re url: ' + url);
     var absUrl = getAbsoluteUrl(url, baseUrl);
@@ -91,9 +96,8 @@ function runMV() {
 
   // loop through each stylesheet
   for (var i=0; i<docCsses.length; i++) {
-
-    var parent = docCsses[i].ownerNode;
-    var desc = parent.tagName.toUpperCase() == "STYLE" ? "inline style" : parent.href;
+    // var parent = docCsses[i].ownerNode;
+    // var desc = parent.tagName.toUpperCase() == 'STYLE' ? 'inline style' : parent.href;
     // console.log(`processing css: ${desc}`);
     // console.dir(docCsses[i]);
 
@@ -108,7 +112,7 @@ function runMV() {
   applyBaseStyles();
 
   //force repaint
-  var a = document.body.style.backgroundColor;
+  document.body.style.backgroundColor;
 }
 
 // Will need to be an asynchronous depth first recursion
@@ -138,8 +142,8 @@ function processSameDomainCss(css) {
       replaceVwWithPx(css);
     }
   } catch (err) {
-      console.dir(err);
-      //FF doesn't let you inspect css loaded from other domains
+    console.dir(err);
+    //FF doesn't let you inspect css loaded from other domains
   }
 }
 
@@ -153,10 +157,10 @@ function processExternalDomainCss(css) {
 }
 
 function processExternalDomainCssFromUrl(url) {
-  // console.log("requesting: " + url);
+  // console.log('requesting: ' + url);
   var xhr = new XMLHttpRequest();
   xhr.addEventListener('load', _processExternalStylesheetOnLoad);
-  xhr.open("GET", url, true);
+  xhr.open('GET', url, true);
   xhr.send();
 }
 
@@ -170,8 +174,8 @@ function _processExternalStylesheetOnLoad(xhr) {
     //the site where the css came from
     cssStr = absolutizeAllRelativeUrlsInCss(xhr.responseURL, cssStr);
 
-    styleElem = document.createElement("style");
-    document.querySelector("head").appendChild(styleElem);
+    styleElem = document.createElement('style');
+    document.querySelector('head').appendChild(styleElem);
     styleElem.innerHTML = cssStr;
     var css = styleElem.sheet;
 
@@ -195,8 +199,8 @@ function getMediaQueries(css) {
       }
     }
   } catch (err) {
-      console.dir(err);
-      //FF doesn't let you inspect css loaded from other domains
+    console.dir(err);
+    //FF doesn't let you inspect css loaded from other domains
   }
 
   return mediaRules;
@@ -210,23 +214,23 @@ function seperateMQueriesToShowAndHide(mQueries) {
 
     //get the media query text
     try {
-        mediaText = mQueries[i].media.mediaText; //doesn't work on FF
+      mediaText = mQueries[i].media.mediaText; //doesn't work on FF
     } catch(err) {
-        mediaText = mQueries[i].conditionText; //works in FF
+      mediaText = mQueries[i].conditionText; //works in FF
     }
 
     //Test if this mediaquery is valid for mobile
     appearsInMobile = matchQuery(mediaText, {type : 'screen', width: '299px'});
-    // console.log( (appearsInMobile ? 'show' : 'hide') + ": " + mediaText );
+    // console.log( (appearsInMobile ? 'show' : 'hide') + ': ' + mediaText );
     (appearsInMobile ? show : hide).push(mQueries[i]);
   }
   return [show, hide];
 }
 
 function show(mQueries) {
-  _applyMediaQuery(mQueries, "(min-width: 1px)");
+  _applyMediaQuery(mQueries, '(min-width: 1px)');
 }
 
 function hide(mQueries) {
-  _applyMediaQuery(mQueries, "(max-width: 1px)");
+  _applyMediaQuery(mQueries, '(max-width: 1px)');
 }

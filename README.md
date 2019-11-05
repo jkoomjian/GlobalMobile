@@ -55,7 +55,6 @@ TODO:
 +* eslint
 +* cleanup, remove cache?
 * not running!
-* split up scripts
 * generate for FF
 * rename, better description
 
