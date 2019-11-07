@@ -14,6 +14,9 @@ function _isCss(stylesheetObj) {
 //Given an array of css selectors, and a media query rule, set the selectors to use the rule
 function _applyMediaQuery(mQueries, mediaQueryText) {
   mQueries.forEach( mQuery => {
+    // According to the documentation, media.mediaText should be read-only and you should update conditionText
+    // According to experimentation conditionText is read-only and you should update media.mediaText
+    // https://drafts.csswg.org/css-conditional-3/#the-cssmediarule-interface
     try {
       mQuery.media.mediaText = mediaQueryText;
     } catch (err) {
@@ -111,7 +114,8 @@ function runMV() {
 
   applyBaseStyles();
 
-  //force repaint
+  //force repaint, trigger any on resize js
+  window.dispatchEvent(new Event('resize'));
   document.body.style.backgroundColor;
 }
 
@@ -134,9 +138,9 @@ function processSameDomainCss(css) {
 
       // Apply the new styling
       let queries = getMediaQueries(css);
-      let seperatedQueries = seperateMQueriesToShowAndHide(queries);
-      show(seperatedQueries[0]);
-      hide(seperatedQueries[1]);
+      let [showQ, hideQ] = seperateMQueriesToShowAndHide(queries);
+      show(showQ);
+      hide(hideQ);
 
       // fix vw
       replaceVwWithPx(css);
@@ -185,32 +189,44 @@ function _processExternalStylesheetOnLoad(xhr) {
 }
 
 
-/* Given a css, return an array of media rules in all the given csses */
+/* 
+ * Given a css, return an array of media rules in all the given csses
+ * @media rules can wrap other @media rules but this is not currently supported.
+ * This does support @supports rules which wrap @media rules.
+ */
 function getMediaQueries(css) {
-  var rules, mediaRules = [];
+  const mediaRules = [];
 
-  try {
-    rules = css.rules || css.cssRules;
+  const processRuleSet = (cssRules) => {
+    cssRules = Array.from(cssRules);
 
-    // loop through each rule
-    for (let j in rules) {
-      if (rules[j] instanceof CSSMediaRule) {
-        mediaRules.push(rules[j]);
-      }
+    try {
+      // loop through each rule
+      cssRules.forEach(rule => {
+        if (rule instanceof CSSMediaRule) {
+          mediaRules.push(rule);
+        } else if (rule instanceof CSSSupportsRule){
+          processRuleSet(rule.cssRules);
+        }
+      });
+    } catch (err) {
+      console.dir(err);
+      //FF doesn't let you inspect css loaded from other domains
     }
-  } catch (err) {
-    console.dir(err);
-    //FF doesn't let you inspect css loaded from other domains
-  }
+  };
+  
+  processRuleSet(css.rules || css.cssRules);
 
   return mediaRules;
 }
 
 //Return [[Queries to show], [Queries to hide]]
 function seperateMQueriesToShowAndHide(mQueries) {
-  var show = [], hide = [], mediaText, appearsInMobile;
-
+  const show = [];
+  const hide = [];
+  
   for (let i=0; i<mQueries.length; i++) {
+    let mediaText;
 
     //get the media query text
     try {
@@ -220,7 +236,7 @@ function seperateMQueriesToShowAndHide(mQueries) {
     }
 
     //Test if this mediaquery is valid for mobile
-    appearsInMobile = matchQuery(mediaText, {type : 'screen', width: '299px'});
+    const appearsInMobile = matchQuery(mediaText, {type : 'screen', width: '299px'});
     // console.log( (appearsInMobile ? 'show' : 'hide') + ': ' + mediaText );
     (appearsInMobile ? show : hide).push(mQueries[i]);
   }

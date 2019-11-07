@@ -20,8 +20,15 @@ body > div {
 
 
 /* Link Test */
-
 .link-test {background-color: red;}
 @media (max-width: 400px) {
   .link-test {background-color: green;}
+}
+
+/* Supports Test */
+.supports-test {background-color: red;}
+@supports (display:grid){
+  @media (max-width: 400px) {
+    .supports-test {background-color: green;}
+  }
 }
