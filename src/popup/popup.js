@@ -1,6 +1,6 @@
 /*----------- Helper ----------------*/
 function isOnList(listName, callback) {
-  chrome.tabs.query({active: true, currentWindow: true }, tabs => {
+  chrome.tabs.query({active: true }, tabs => {
     if (!tabs.length) return;
     gmbp.isOnList(listName, tabs[0].url, callback);
   });
@@ -9,7 +9,8 @@ function isOnList(listName, callback) {
 /*----------- Popup ----------------*/
 function popupRunOnce() {
   gmbp.gmSync.runOnce = true;
-  _popupReload();
+  gmbp.runGMInternal();
+  window.close();
 }
 
 function popupDisableOnce() {
@@ -34,9 +35,14 @@ function popupRemoveBlacklist() {
 }
 
 function _popupUpdateList(listName, toDelete) {
-  chrome.tabs.query({active: true, currentWindow: true }, tabs => {
+  chrome.tabs.query({active: true }, tabs => {
     gmbp.saveChangeToList(listName, tabs[0].url, function() {
-      _popupReload(window);
+      if (!toDelete) {
+        gmbp.runGMInternal();
+        window.close();
+      } else { 
+        _popupReload();
+      }
     }, toDelete ? 'deleted' : 'domain');
   });
 }
@@ -56,8 +62,10 @@ function popupShowRelevantButtons() {
 }
 
 function _popupReload() {
-  window.close();
-  chrome.tabs.reload();
+  chrome.tabs.query({ active: true, windowType: 'normal' }, tabs => {
+    chrome.tabs.reload(tabs[0].id);
+    window.close();
+  });
 }
 
 /*----------- Run! ----------------*/

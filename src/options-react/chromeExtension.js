@@ -18,7 +18,7 @@ window.cExt = {
       )
     );
 
-    chrome.storage.sync.get(null, function (storage) {
+    chrome.storage.local.get(null, function (storage) {
       const initialState = {
         showAddNew: false,
         autoRun: !!storage['autoRun'],
@@ -31,7 +31,7 @@ window.cExt = {
 
   saveAutoRun(val) {
     gmbp.gmSync.autoRun = val;
-    chrome.storage.sync.set({ autoRun: val });
+    chrome.storage.local.set({ autoRun: val });
   },
 
   addSite(siteUrl, shouldSkipHome, listName) {

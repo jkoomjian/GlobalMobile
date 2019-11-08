@@ -54,8 +54,10 @@ TODO:
 +* get running
 +* eslint
 +* cleanup, remove cache?
-* not running!
-* generate for FF
++* not running!
++* generate for FF
+* switch to browser and use promises?
+** cleanup - split up files?
 * rename, better description
 
 

@@ -23,26 +23,26 @@ describe('saveChangeToList', function() {
     window.myCallback = function() {};
     window.chrome = window['chrome'] || {};
     chrome.storage = {
-      sync: {
+      local: {
         'get': function(arg1, arg2){},
         'set': function(arg1, arg2){}
       }
     };
-    spyOn(chrome.storage.sync, 'get');
-    spyOn(chrome.storage.sync, 'set');
+    spyOn(chrome.storage.local, 'get');
+    spyOn(chrome.storage.local, 'set');
   });
 
-  it('calls sync correctly', function() {
+  it('calls chrome.storage.local correctly', function() {
     saveChangeToList('whitelist', jkUrl, myCallback);
-    expect(chrome.storage.sync.get).toHaveBeenCalled();
-    expect(chrome.storage.sync.get.calls.argsFor(0)[0]).toEqual({'whitelist': {}});
+    expect(chrome.storage.local.get).toHaveBeenCalled();
+    expect(chrome.storage.local.get.calls.argsFor(0)[0]).toEqual({'whitelist': {}});
     //run callback, verify it calls set correctly
-    let callback = chrome.storage.sync.get.calls.argsFor(0)[1];
+    let callback = chrome.storage.local.get.calls.argsFor(0)[1];
     callback({'whitelist': {}});
-    expect(chrome.storage.sync.set).toHaveBeenCalled();
+    expect(chrome.storage.local.set).toHaveBeenCalled();
     let toSet = {};
     toSet[jkDomain] = 'domain';
-    expect(chrome.storage.sync.set.calls.argsFor(0)[0]).toEqual({'whitelist': toSet});
+    expect(chrome.storage.local.set.calls.argsFor(0)[0]).toEqual({'whitelist': toSet});
   });
 
   it('updates the cache', function() {

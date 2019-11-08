@@ -20,7 +20,7 @@ function gmInit() {
   // This causes problems with onBeforeSendHeaders - the headers will
   // send before the async request finishes. 
   // To fix this, load this data on extension load.
-  chrome.storage && chrome.storage.sync.get(null, function (items) {
+  chrome.storage && chrome.storage.local.get(null, function (items) {
     window.gmSync.whitelist = items['whitelist'] || {};
     window.gmSync.blacklist = items['blacklist'] || {};
     window.gmSync.autoRun = !!items['autoRun'];
@@ -29,16 +29,12 @@ function gmInit() {
 
 
 
-/*-------------- On Page Load ----------------*/
-function onPageLoad(details) {
-
-  //ignore frames - only run if this is the main frame
-  if (details.frameId !== 0) return;
-
-  if (isEnabled(details.url)) {
-    updateQuerySelectors(details);
+/*-------------- Start! ----------------*/
+function runGM(url, tabId) {
+  if (isEnabled(url)) {
+    updateQuerySelectors(tabId);
     // Update the icon once after page load
-    updateIcon(details.url, details.tabId);
+    updateIcon(tabId);
   }
   
   // window vars are scoped to extension, are persisted across pages, so unset
@@ -47,17 +43,23 @@ function onPageLoad(details) {
   window.gmSync.runOnce = false;
 }
 
+function runGMInternal() {
+  chrome.tabs.query({ active: true }, tabs => {
+    const { url, id } = tabs[0];
+    runGM(url, id);
+  });
+}
+
 // Called when the page loading is complete
 // Running in Chrome Extension Env.
-function updateQuerySelectors(details) {
-  console.log('Calling runMV');
-  chrome.tabs.executeScript(details.tabId, { 'file': 'lib/jquery.js' }, function () {
-    chrome.tabs.executeScript(details.tabId, { 'file': 'lib/mq.js' }, function () {
-      chrome.tabs.executeScript(details.tabId, { 'file': 'lib/uri.js' }, function () {
-        chrome.tabs.executeScript(details.tabId, { 'file': 'js/common.js' }, function () {
-          chrome.tabs.executeScript(details.tabId, { 'file': 'js/mobile-view.js' }, function () {
-            chrome.tabs.executeScript(details.tabId, { 'file': 'js/vw.js' }, function () {
-              chrome.tabs.executeScript(details.tabId, { 'code': 'runMV()' });
+function updateQuerySelectors(tabId) {
+  chrome.tabs.executeScript(tabId, { 'file': '/lib/jquery.js' }, function () {
+    chrome.tabs.executeScript(tabId, { 'file': '/lib/mq.js' }, function () {
+      chrome.tabs.executeScript(tabId, { 'file': '/lib/uri.js' }, function () {
+        chrome.tabs.executeScript(tabId, { 'file': '/js/common.js' }, function () {
+          chrome.tabs.executeScript(tabId, { 'file': '/js/mobile-view.js' }, function () {
+            chrome.tabs.executeScript(tabId, { 'file': '/js/vw.js' }, function () {
+              chrome.tabs.executeScript(tabId, { 'code': 'runMV()' });
             });
           });
         });
@@ -66,11 +68,17 @@ function updateQuerySelectors(details) {
   });
 }
 
-function updateIcon(url, tabId) {
+function updateIcon(tabId) {
   // var iconPath = 'img/' + (isEnabled(url) ? 'icon_active.png' : 'icon_inactive.png');
   // chrome.browserAction.setIcon({path: iconPath, tabId: tabId});
-  chrome.browserAction.setBadgeText({ text: 'On', tabId: tabId });
-  chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 1], tabId: tabId });
+  chrome.browserAction.setBadgeText({ text: 'On', tabId });
+  chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255], tabId });
+  // FF Only
+  try {
+    chrome.browserAction.setBadgeTextColor({ color: 'white', tabId });
+  } catch(e) {
+    //
+  }
 }
 
 
@@ -134,6 +142,13 @@ var updateHeaders = function(details) {
   }
 };
 
+function onPageLoad(details) {
+
+  //ignore frames - only run if this is the main frame
+  if (details.frameId !== 0) return;
+
+  runGM(details.url, details.tabId);
+}
 
 
 /*-------------- Listeners ----------------*/

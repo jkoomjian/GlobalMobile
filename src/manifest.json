@@ -2,9 +2,12 @@
   "manifest_version": 2,
 
   "name": "Global Mobile",
-  "version": "1.29",
+  "version": "1.31",
   "description": "Make all web pages display as they would on a mobile device",
-  "options_page": "options-react/options.html",
+  "options_ui": {
+    "page": "options-react/options.html",
+    "browser_style": false
+  },
   "icons": { "16": "img/icon-16.png",
               "48": "img/icon-48.png",
               "128": "img/icon-128.png" },
@@ -14,17 +17,23 @@
     "default_popup": "popup/popup.html",
     "default_title": "Global Mobile - view the mobile version of this page"
   },
-  "content_security_policy": "script-src 'self' 'sha256-2DTisUcMEsik0IF8rHp55ZEgpJ/pxaNsC3iGdUdcE1w='",
+  "content_security_policy": "script-src 'self' 'sha256-2DTisUcMEsik0IF8rHp55ZEgpJ/pxaNsC3iGdUdcE1w='; object-src 'self'",
   "background": {
     "scripts": ["lib/uri.js", "js/common.js", "background.js"],
     "persistent": true
   },
+  "applications": {
+    "gecko": {
+      "id": "addon@example.com"
+    }
+  },
   "permissions": [
     "activeTab",
+    "tabs",
     "webRequest", "webRequestBlocking",
     "webNavigation",
-    "http://*/*", "https://*/*",
-    "storage",
-    "tabs"
+    "*://*/*",
+    "*://localhost/*",
+    "storage"
   ]
 }

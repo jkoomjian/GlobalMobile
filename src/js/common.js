@@ -17,12 +17,12 @@ function saveChangeToList(listName, siteUrl, callback, saveFlag) {
   list[domain] = saveFlag;
 
   //Update persistent storage
-  chrome.storage.sync.get({ [listName]: {} }, function(items) {
+  chrome.storage.local.get({ [listName]: {} }, function(items) {
     console.log('at save', listName, items);
     let currList = items[listName];
     currList[domain] = saveFlag;
 
-    chrome.storage.sync.set({[listName]: currList}, function() {
+    chrome.storage.local.set({[listName]: currList}, function() {
       if (callback) callback();
     });
 
@@ -32,7 +32,7 @@ function saveChangeToList(listName, siteUrl, callback, saveFlag) {
 function isOnList(listName, url, callback) {
   var domain = getDomain(url), toGet = {};
   toGet[listName] = {};
-  chrome.storage.sync.get(toGet, function(items) {
+  chrome.storage.local.get(toGet, function(items) {
     callback( isActiveDomain(items[listName][domain]) );
   });
 }

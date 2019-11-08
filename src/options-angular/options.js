@@ -18,7 +18,7 @@ optionsApp.config(function($routeProvider){
 optionsApp.factory('chromeSync', function() {
   return {
     get: function(listName, callback) {
-      chrome.storage.sync.get(listName, function(items) {
+      chrome.storage.local.get(listName, function(items) {
         items = items[listName] || {};
         callback(items);
       });
@@ -86,7 +86,7 @@ optionsApp.controller('optionsController', function($scope, $route, $routeParams
   }
 
   function loadAutoRun() {
-    chrome.storage.sync.get("autoRun", function(items) {
+    chrome.storage.local.get("autoRun", function(items) {
       $scope.autoRun = !!items["autoRun"];
       $scope.$digest();
     });
@@ -96,7 +96,7 @@ optionsApp.controller('optionsController', function($scope, $route, $routeParams
   function saveAutoRun() {
     var checkbox = document.getElementById("autoRunCheckbox");
     gmbp.gmSync.autoRun = checkbox.checked;
-    chrome.storage.sync.set({autoRun: checkbox.checked ? "true" : ""});
+    chrome.storage.local.set({autoRun: checkbox.checked ? "true" : ""});
   }
 
   function showAddNew() {
