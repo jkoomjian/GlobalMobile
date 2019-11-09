@@ -4,7 +4,7 @@ const mobileUserAgent = 'Mozilla/5.0 (Linux; Android 6.0) AppleWebkit/537.36 (KH
 /*-------------- On Extension Load ----------------*/
 
 // Load gm data from chrome.sync
-function gmInit() {
+async function gmInit() {
   // Save all loaded data to gmSync
   window.gmSync = {
     // cache isEnabled return value since it is called many times per requests
@@ -20,11 +20,12 @@ function gmInit() {
   // This causes problems with onBeforeSendHeaders - the headers will
   // send before the async request finishes. 
   // To fix this, load this data on extension load.
-  chrome.storage && chrome.storage.local.get(null, function (items) {
+  if (chrome.storage) {
+    const items = await chrome.storage.local.get(null);
     window.gmSync.whitelist = items['whitelist'] || {};
     window.gmSync.blacklist = items['blacklist'] || {};
     window.gmSync.autoRun = !!items['autoRun'];
-  });
+  }
 }
 
 
@@ -43,29 +44,23 @@ function runGM(url, tabId) {
   window.gmSync.runOnce = false;
 }
 
-function runGMInternal() {
-  chrome.tabs.query({ active: true }, tabs => {
-    const { url, id } = tabs[0];
-    runGM(url, id);
-  });
+async function runGMInternal() {
+  const tabs = await browser.tabs.query({ active: true });
+  const { url, id } = tabs[0];
+  runGM(url, id);
 }
 
 // Called when the page loading is complete
 // Running in Chrome Extension Env.
-function updateQuerySelectors(tabId) {
-  chrome.tabs.executeScript(tabId, { 'file': '/lib/jquery.js' }, function () {
-    chrome.tabs.executeScript(tabId, { 'file': '/lib/mq.js' }, function () {
-      chrome.tabs.executeScript(tabId, { 'file': '/lib/uri.js' }, function () {
-        chrome.tabs.executeScript(tabId, { 'file': '/js/common.js' }, function () {
-          chrome.tabs.executeScript(tabId, { 'file': '/js/mobile-view.js' }, function () {
-            chrome.tabs.executeScript(tabId, { 'file': '/js/vw.js' }, function () {
-              chrome.tabs.executeScript(tabId, { 'code': 'runMV()' });
-            });
-          });
-        });
-      });
-    });
-  });
+async function updateQuerySelectors(tabId) {
+  await browser.tabs.executeScript(tabId, { 'file': '/lib/jquery.js' });
+  await browser.tabs.executeScript(tabId, { 'file': '/lib/mq.js' });
+  await browser.tabs.executeScript(tabId, { 'file': '/lib/uri.js' });
+  await browser.tabs.executeScript(tabId, { 'file': '/js/common.js' });
+  
+  await browser.tabs.executeScript(tabId, { 'file': '/js/mobile-view.js' });
+  await browser.tabs.executeScript(tabId, { 'file': '/js/vw.js' });
+  await browser.tabs.executeScript(tabId, { 'code': 'runMV()' });
 }
 
 function updateIcon(tabId) {
@@ -164,7 +159,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 );
 
 //Update media queries after page load completed
-chrome.webNavigation.onCompleted.addListener(onPageLoad);
+browser.webNavigation.onCompleted.addListener(onPageLoad);
 
 //On Extension Load
 gmInit();
