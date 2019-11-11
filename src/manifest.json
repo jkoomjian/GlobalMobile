@@ -17,7 +17,7 @@
     "default_popup": "popup/popup.html",
     "default_title": "Global Mobile - view the mobile version of this page"
   },
-  "content_security_policy": "script-src 'self' 'sha256-2DTisUcMEsik0IF8rHp55ZEgpJ/pxaNsC3iGdUdcE1w='; object-src 'self'",
+  "content_security_policy": "script-src 'self' 'sha256-mR8a6Jz11eXxHp+5kPHqWjnVY1tHCr7H0qaeH2ZInBc='; object-src 'self'",
   "background": {
     "scripts": [
       "lib/browser-polyfill.min.js", "lib/uri.js", "js/commonPage.js", 

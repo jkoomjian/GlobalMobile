@@ -60,7 +60,6 @@ const App = props => {
     <React.Fragment>
       <RunByDefault {...{ autoRun, toggleAutoRun }} />
       <SiteList {...{ showAddNew, updateShowAddNew, autoRun, whitelist, blacklist, deleteSite }} />
-      <CloseButton />
       <AddSitePanel {...{ showAddNew, updateShowAddNew, autoRun, addSite }} />
     </React.Fragment>
   );
@@ -125,17 +124,17 @@ const Site = ({url, deleteSite}) => (
 );
 
 /** CloseButton */
-const CloseButton = props => {
-  const closeOptions = async () => {
-    const tab = await browser.tabs.getCurrent();
-    browser.tabs.remove(tab.id);
-  };
-  return (
-    <div className='finished-row'>
-      <button id='finished' onClick={closeOptions}>Close</button>
-    </div>
-  );
-};
+// const CloseButton = props => {
+//   const closeOptions = async () => {
+//     const tab = await browser.tabs.getCurrent();
+//     browser.tabs.remove(tab.id);
+//   };
+//   return (
+//     <div className='finished-row'>
+//       <button id='finished' onClick={closeOptions}>Close</button>
+//     </div>
+//   );
+// };
 
 /** AddSitePanel */
 const AddSitePanel = ({ showAddNew, updateShowAddNew, autoRun, addSite }) => {
