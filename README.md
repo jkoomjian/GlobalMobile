@@ -57,8 +57,3 @@ In manifest.json you have to update the content security policy with the hash of
 "content_security_policy": "script-src 'self' 'sha256-l6W+m5yTEAvuVkdmv4f9jb3hBjWaLts2SFwwvrT1RTo='",
 Also, ES6 modules don't currently work with the in-browser babel.
 For testing, just use test/react/index.html to avoid this.
-
---------------
-
-Chrome currently doesn't support the promise based window.browser api. When it does add support, switch to promises.
-https://bugs.chromium.org/p/chromium/issues/detail?id=328932

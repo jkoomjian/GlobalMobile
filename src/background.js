@@ -3,7 +3,7 @@ const mobileUserAgent = 'Mozilla/5.0 (Linux; Android 6.0) AppleWebkit/537.36 (KH
 
 /*-------------- On Extension Load ----------------*/
 
-// Load gm data from chrome.sync
+// Load gm data from browser.local
 async function gmInit() {
   // Save all loaded data to gmSync
   window.gmSync = {
@@ -20,8 +20,8 @@ async function gmInit() {
   // This causes problems with onBeforeSendHeaders - the headers will
   // send before the async request finishes. 
   // To fix this, load this data on extension load.
-  if (chrome.storage) {
-    const items = await chrome.storage.local.get(null);
+  if (browser.storage) {
+    const items = await browser.storage.local.get(null);
     window.gmSync.whitelist = items['whitelist'] || {};
     window.gmSync.blacklist = items['blacklist'] || {};
     window.gmSync.autoRun = !!items['autoRun'];
@@ -56,8 +56,7 @@ async function updateQuerySelectors(tabId) {
   await browser.tabs.executeScript(tabId, { 'file': '/lib/jquery.js' });
   await browser.tabs.executeScript(tabId, { 'file': '/lib/mq.js' });
   await browser.tabs.executeScript(tabId, { 'file': '/lib/uri.js' });
-  await browser.tabs.executeScript(tabId, { 'file': '/js/common.js' });
-  
+  await browser.tabs.executeScript(tabId, { 'file': '/js/commonPage.js' });
   await browser.tabs.executeScript(tabId, { 'file': '/js/mobile-view.js' });
   await browser.tabs.executeScript(tabId, { 'file': '/js/vw.js' });
   await browser.tabs.executeScript(tabId, { 'code': 'runMV()' });
@@ -65,12 +64,12 @@ async function updateQuerySelectors(tabId) {
 
 function updateIcon(tabId) {
   // var iconPath = 'img/' + (isEnabled(url) ? 'icon_active.png' : 'icon_inactive.png');
-  // chrome.browserAction.setIcon({path: iconPath, tabId: tabId});
-  chrome.browserAction.setBadgeText({ text: 'On', tabId });
-  chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255], tabId });
+  // browser.browserAction.setIcon({path: iconPath, tabId: tabId});
+  browser.browserAction.setBadgeText({ text: 'On', tabId });
+  browser.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255], tabId });
   // FF Only
   try {
-    chrome.browserAction.setBadgeTextColor({ color: 'white', tabId });
+    browser.browserAction.setBadgeTextColor({ color: 'white', tabId });
   } catch(e) {
     //
   }
@@ -149,7 +148,7 @@ function onPageLoad(details) {
 /*-------------- Listeners ----------------*/
 
 //Update headers before each http request
-chrome.webRequest.onBeforeSendHeaders.addListener(
+browser.webRequest.onBeforeSendHeaders.addListener(
   updateHeaders, 
   {
     urls: ['<all_urls>'],

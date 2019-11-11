@@ -8,42 +8,37 @@
 
 // Pull in methods from background page
 // (but not jquery - else jquery will operate on the backgroundPage dom)
-const gmbp = chrome.extension.getBackgroundPage();
+const gmbp = browser.extension.getBackgroundPage();
 
 window.cExt = {
-  getInitialState(callback) {
+  async getInitialState(callback) {
     const getActiveEntries = (data) => (
       Object.fromEntries(
         Object.entries(data || {}).filter(([url, saveFlag]) => gmbp.isActiveDomain(saveFlag))
       )
     );
 
-    chrome.storage.local.get(null, function (storage) {
-      const initialState = {
-        showAddNew: false,
-        autoRun: !!storage['autoRun'],
-        whitelist: getActiveEntries(storage['whitelist']),
-        blacklist: getActiveEntries(storage['blacklist']),
-      };
-      callback(initialState);
-    });
+    const storage = await browser.storage.local.get(null);
+    return {
+      showAddNew: false,
+      autoRun: !!storage['autoRun'],
+      whitelist: getActiveEntries(storage['whitelist']),
+      blacklist: getActiveEntries(storage['blacklist']),
+    };
   },
 
-  saveAutoRun(val) {
+  async saveAutoRun(val) {
     gmbp.gmSync.autoRun = val;
-    chrome.storage.local.set({ autoRun: val });
+    await browser.storage.local.set({ autoRun: val });
   },
 
-  addSite(siteUrl, shouldSkipHome, listName) {
-    var saveFlag = 'domain';
-    if (shouldSkipHome) {
-      saveFlag = 'nohome';
-    }
-    gmbp.saveChangeToList(listName, siteUrl, null, saveFlag);
+  async addSite(siteUrl, shouldSkipHome, listName) {
+    const saveFlag = shouldSkipHome ? 'nohome' : 'domain';
+    await gmbp.saveChangeToList(listName, siteUrl, saveFlag);
   },
 
-  deleteSite(siteUrl, listName) {
-    gmbp.saveChangeToList(listName, siteUrl, null, 'deleted');
+  async deleteSite(siteUrl, listName) {
+    await gmbp.saveChangeToList(listName, siteUrl, 'deleted');
   }
 
-}
+};

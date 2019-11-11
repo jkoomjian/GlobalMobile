@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Global Mobile",
-  "version": "1.31",
+  "version": "1.32",
   "description": "Make all web pages display as they would on a mobile device",
   "options_ui": {
     "page": "options-react/options.html",
@@ -19,7 +19,10 @@
   },
   "content_security_policy": "script-src 'self' 'sha256-2DTisUcMEsik0IF8rHp55ZEgpJ/pxaNsC3iGdUdcE1w='; object-src 'self'",
   "background": {
-    "scripts": ["lib/uri.js", "js/common.js", "background.js"],
+    "scripts": [
+      "lib/browser-polyfill.min.js", "lib/uri.js", "js/commonPage.js", 
+      "js/commonBackground.js", "background.js"
+    ],
     "persistent": true
   },
   "applications": {

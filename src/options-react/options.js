@@ -15,7 +15,7 @@ const App = props => {
   // set initial state with values from Chrome
   if (window.cExt && shouldLoadInitialState) {
     shouldLoadInitialState = false;
-    cExt.getInitialState(is => {
+    cExt.getInitialState().then(is => {
       setState(is);
     });
   }
@@ -35,9 +35,9 @@ const App = props => {
   // Otherwise the state will not be updated by useState and the 
   // second invocation of setState will overwrite the first
   // Alternatively use different states for different parts of the data
-  const addSite = (url, shouldSkipHome) => {
+  const addSite = async (url, shouldSkipHome) => {
     const listName = state.autoRun ? 'blacklist' : 'whitelist';
-    if (window.cExt) cExt.addSite(url, shouldSkipHome, listName);
+    if (window.cExt) await cExt.addSite(url, shouldSkipHome, listName);
     setState({
       ...state,
       [listName]: { ...state[listName], [url]: shouldSkipHome },
@@ -45,9 +45,9 @@ const App = props => {
     });
   };
 
-  const deleteSite = (urlToDelete) => {
+  const deleteSite = async urlToDelete => {
     const listName = state.autoRun ? 'blacklist' : 'whitelist';
-    if (window.cExt) cExt.deleteSite(urlToDelete, listName);
+    if (window.cExt) await cExt.deleteSite(urlToDelete, listName);
     const listClone = {...state[listName]};
     delete listClone[urlToDelete];
     setState({
@@ -126,10 +126,9 @@ const Site = ({url, deleteSite}) => (
 
 /** CloseButton */
 const CloseButton = props => {
-  const closeOptions = () => {
-    chrome.tabs.getCurrent(tab => {
-      chrome.tabs.remove(tab.id);
-    });
+  const closeOptions = async () => {
+    const tab = await browser.tabs.getCurrent();
+    browser.tabs.remove(tab.id);
   };
   return (
     <div className='finished-row'>

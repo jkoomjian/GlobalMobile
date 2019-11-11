@@ -1,53 +1,50 @@
 /*----------- Helper ----------------*/
-function isOnList(listName, callback) {
-  chrome.tabs.query({active: true }, tabs => {
-    if (!tabs.length) return;
-    gmbp.isOnList(listName, tabs[0].url, callback);
-  });
+async function isOnList(listName, callback) {
+  const tabs = await browser.tabs.query({active: true });
+  if (!tabs.length) return;
+  return await gmbp.isOnList(listName, tabs[0].url);
 }
 
 /*----------- Popup ----------------*/
-function popupRunOnce() {
+async function popupRunOnce() {
   gmbp.gmSync.runOnce = true;
-  gmbp.runGMInternal();
+  await gmbp.runGMInternal();
   window.close();
 }
 
-function popupDisableOnce() {
+async function popupDisableOnce() {
   gmbp.gmSync.disableOnce = true;
-  _popupReload();
+  await _popupReload();
 }
 
-function popupAddWhitelist() {
-  _popupUpdateList('whitelist');
+async function popupAddWhitelist() {
+  await _popupUpdateList('whitelist');
 }
 
-function popupAddBlacklist() {
-  _popupUpdateList('blacklist');
+async function popupAddBlacklist() {
+  await _popupUpdateList('blacklist');
 }
 
-function popupRemoveWhitelist() {
-  _popupUpdateList('whitelist', true);
+async function popupRemoveWhitelist() {
+  await _popupUpdateList('whitelist', true);
 }
 
-function popupRemoveBlacklist() {
-  _popupUpdateList('blacklist', true);
+async function popupRemoveBlacklist() {
+  await _popupUpdateList('blacklist', true);
 }
 
-function _popupUpdateList(listName, toDelete) {
-  chrome.tabs.query({active: true }, tabs => {
-    gmbp.saveChangeToList(listName, tabs[0].url, function() {
-      if (!toDelete) {
-        gmbp.runGMInternal();
-        window.close();
-      } else { 
-        _popupReload();
-      }
-    }, toDelete ? 'deleted' : 'domain');
-  });
+async function _popupUpdateList(listName, toDelete) {
+  const tabs = await browser.tabs.query({active: true });
+  await gmbp.saveChangeToList(listName, tabs[0].url, toDelete ? 'deleted' : 'domain');
+  if (!toDelete) {
+    await gmbp.runGMInternal();
+    window.close();
+  } else { 
+    await _popupReload();
+  }
 }
 
-function popupShowRelevantButtons() {
+async function popupShowRelevantButtons() {
   var listName;
   if (gmbp.gmSync.autoRun) {
     $('.whitelist').hide();
@@ -56,19 +53,21 @@ function popupShowRelevantButtons() {
     $('.blacklist').hide();
     listName = 'whitelist';
   }
-  isOnList(listName, function(onList) {
-    $( (onList ? '.off-' : '.on-') + listName).hide();
-  });
+  const onList = await isOnList(listName);
+  $( (onList ? '.off-' : '.on-') + listName).hide();
 }
 
-function _popupReload() {
-  chrome.tabs.query({ active: true, windowType: 'normal' }, tabs => {
-    chrome.tabs.reload(tabs[0].id);
-    window.close();
-  });
+async function _popupReload() {
+  const tabs = await browser.tabs.query({ active: true, windowType: 'normal' });
+  browser.tabs.reload(tabs[0].id);
+  window.close();
 }
 
 /*----------- Run! ----------------*/
+// Pull in methods from background page
+// (but not jquery - else jquery will operate on the backgroundPage dom)
+const gmbp = browser.extension.getBackgroundPage();
+
 document.addEventListener('DOMContentLoaded', function() {
   [
     ['.run-once', popupRunOnce],
@@ -82,7 +81,3 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   popupShowRelevantButtons();
 });
-
-// Pull in methods from background page
-// (but not jquery - else jquery will operate on the backgroundPage dom)
-const gmbp = chrome.extension.getBackgroundPage();
