@@ -143,7 +143,8 @@ function processSameDomainCss(css) {
     }
   } catch (err) {
     //FF doesn't let you inspect css loaded from other domains
-    console.log(err);
+    console.log(err, err.stack);
+    // debugger;
   }
 }
 
@@ -175,12 +176,18 @@ function _processExternalStylesheetOnLoad(xhr) {
     cssStr = absolutizeAllRelativeUrlsInCss(xhr.responseURL, cssStr);
 
     styleElem = document.createElement('style');
+    styleElem.setAttribute('type', 'text/css');
     document.querySelector('head').appendChild(styleElem);
-    styleElem.innerHTML = cssStr;
+
+    var textNode = document.createTextNode(cssStr);
+    styleElem.appendChild(textNode);
     var css = styleElem.sheet;
 
-    //can treat this as a same domain css, now that we have loaded it inline
-    processSameDomainCss(css);
+    // Put this on the event queue to give the browser time to render the style sheet
+    setTimeout(() => {
+      //can treat this as a same domain css, now that we have loaded it inline
+      processSameDomainCss(css);
+    }, 10);
   }
 }
 

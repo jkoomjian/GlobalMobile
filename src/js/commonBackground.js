@@ -27,6 +27,5 @@ async function saveChangeToList(listName, siteUrl, saveFlag = 'domain') {
 async function isOnList(listName, url) {
   const domain = getDomain(url);
   const items = await browser.storage.local.get({ [listName]: {} });
-  console.log('listNmae', listName, url, items);
   return isActiveDomain(items[listName][domain]);
 }
