@@ -1,46 +1,56 @@
+let items;
+
 describe('saveChangeToList', function() {
 
   beforeEach(function() {
-    window.gmSync = {
-      whitelist: {},
-      blacklist: {},
+    items = {
+      whitelist: { },
+      blacklist: { },
     };
-    window.myCallback = function() {};
+
+    window.gmSync = {
+      ...items
+    };
     window.browser = window['browser'] || {};
     window.browser.storage = {
       local: {
-        'get': function(arg1, arg2){},
-        'set': function(arg1, arg2){}
+        async get() { return items; },
+        async set(arg1) {
+          items = {
+            ...items,
+            ...arg1
+          };
+        }
       }
     };
-    spyOn(browser.storage.local, 'get');
-    spyOn(browser.storage.local, 'set');
+    spyOn(browser.storage.local, 'get').and.callThrough();
+    spyOn(browser.storage.local, 'set').and.callThrough();
   });
 
-  it('calls chrome.storage.local correctly', async function() {
-    const r = await saveChangeToList('whitelist', jkUrl);
-    console.log('at return val', r);
+  it('calls chrome.storage.local correctly', async function(done) {
+
+    await saveChangeToList('whitelist', jkUrl);
+    expect(items.whitelist['jonathankoomjian.com']).toEqual('domain');
     expect(browser.storage.local.get).toHaveBeenCalled();
     expect(browser.storage.local.get.calls.argsFor(0)[0]).toEqual({'whitelist': {}});
-    //run callback, verify it calls set correctly
-    // let callback = browser.storage.local.get.calls.argsFor(0)[1];
-    // callback({'whitelist': {}});
-    expect(browser.storage.local.set).toHaveBeenCalled();
-    expect(browser.storage.local.set.calls.argsFor(0)[0]).toEqual({ 'whitelist': { [jkDomain]: 'domain' }});
+
+    await saveChangeToList('blacklist', jkUrl, 'deleted');
+    expect(items.blacklist['jonathankoomjian.com']).toEqual('deleted');
+    
+    done();
   });
 
-  // it('updates the cache', function() {
-  //   saveChangeToList('whitelist', jkUrl, myCallback);
-  //   expect(window.gmSync.whitelist[jkDomain]).toEqual('domain');
-  //   saveChangeToList('whitelist', jkUrl, myCallback);
-  //   expect(window.gmSync.whitelist[jkDomain]).toEqual('domain');
-  //   saveChangeToList('blacklist', jkUrl, myCallback);
-  //   expect(window.gmSync.blacklist[jkDomain]).toEqual('domain');
-  //   //delete
-  //   saveChangeToList('blacklist', jkUrl, myCallback, 'deleted');
-  //   saveChangeToList('whitelist', jkUrl, myCallback, 'deleted');
-  //   expect(window.gmSync.whitelist[jkDomain]).toEqual('deleted');
-  //   expect(window.gmSync.blacklist[jkDomain]).toEqual('deleted');
-  // });
+  it('updates the cache', async function(done) {
+    await saveChangeToList('whitelist', jkUrl);
+    expect(window.gmSync.whitelist[jkDomain]).toEqual('domain');
+    await saveChangeToList('blacklist', jkUrl);
+    expect(window.gmSync.blacklist[jkDomain]).toEqual('domain');
+    //delete
+    await saveChangeToList('blacklist', jkUrl, 'deleted');
+    expect(window.gmSync.blacklist[jkDomain]).toEqual('deleted');
+    await saveChangeToList('whitelist', jkUrl, 'deleted');
+    expect(window.gmSync.whitelist[jkDomain]).toEqual('deleted');
+    done();
+  });
 
 });
