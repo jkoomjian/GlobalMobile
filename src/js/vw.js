@@ -3,7 +3,7 @@
  * fake width.
  * Replace them with px
  */
-const cssStmtRe = new RegExp(/([\w-]+):\s*(.*?)[;\}]/g);
+const cssStmtRe = new RegExp(/([\w-]+):\s*(.*?)[;}]/g);
 const vwRe = /(-?\d+(\.\d+)?vw)($|;|\s|,|\))/g;
 
 // convert vw to px - the new body will be 800px
@@ -16,7 +16,7 @@ function replaceVwWithPx(css) {
     if (rules[i] instanceof CSSStyleRule && rules[i].cssText.match(vwRe)) {
       let [selector, vwProps] = _convertVwToPx(rules[i].cssText, rules[i]);
       // apply new px value to elem
-      $(selector).css(vwProps);
+      _setCss(document.querySelector(selector), vwProps);
     }
   }
 }
@@ -24,8 +24,10 @@ function replaceVwWithPx(css) {
 function _convertVwToPx(cssText) {
   try {
     // get the values to update
-    let selector = cssText.match(/^(.+?)\s*\{/)[1];
-    let r, vwProps = {};
+    const selector = cssText.match(/^(.+?)\s*\{/)[1];
+    const vwProps = {};
+    let r;
+    
     while((r = cssStmtRe.exec(cssText)) != null) {
       if (r[2].match(vwRe)) vwProps[ r[1] ] = r[2];
     }
@@ -44,4 +46,11 @@ function _convertVwToPx(cssText) {
     console.table(ex);
     return ['', {}];
   }
+}
+
+/** Given an element and an object of css properties, apply the css to the element */
+function _setCss(elem, css) {
+  Object.keys(css).forEach( cssProp => {
+    elem.style[cssProp] = css[cssProp];
+  });
 }

@@ -53,7 +53,6 @@ async function runGMInternal() {
 // Called when the page loading is complete
 // Running in Chrome Extension Env.
 async function updateQuerySelectors(tabId) {
-  await browser.tabs.executeScript(tabId, { 'file': '/lib/jquery.js' });
   await browser.tabs.executeScript(tabId, { 'file': '/lib/mq.js' });
   await browser.tabs.executeScript(tabId, { 'file': '/lib/uri.js' });
   await browser.tabs.executeScript(tabId, { 'file': '/js/commonPage.js' });

@@ -99,10 +99,6 @@ function runMV() {
 
   // loop through each stylesheet
   for (var i=0; i<docCsses.length; i++) {
-    // var parent = docCsses[i].ownerNode;
-    // var desc = parent.tagName.toUpperCase() == 'STYLE' ? 'inline style' : parent.href;
-    // console.log(`processing css: ${desc}`);
-    // console.dir(docCsses[i]);
 
     if (isStyleSheetFromSameOrigin(docCsses[i])) {
       processSameDomainCss(docCsses[i]);
@@ -146,8 +142,8 @@ function processSameDomainCss(css) {
       replaceVwWithPx(css);
     }
   } catch (err) {
-    console.dir(err);
     //FF doesn't let you inspect css loaded from other domains
+    console.log(err);
   }
 }
 
@@ -210,7 +206,7 @@ function getMediaQueries(css) {
         }
       });
     } catch (err) {
-      console.dir(err);
+      console.log(err);
       //FF doesn't let you inspect css loaded from other domains
     }
   };

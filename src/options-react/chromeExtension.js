@@ -7,7 +7,6 @@
 
 
 // Pull in methods from background page
-// (but not jquery - else jquery will operate on the backgroundPage dom)
 const gmbp = browser.extension.getBackgroundPage();
 
 window.cExt = {
