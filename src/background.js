@@ -5,8 +5,8 @@ const mobileUserAgent = 'Mozilla/5.0 (Linux; Android 6.0) AppleWebkit/537.36 (KH
 
 // Load gm data from browser.local
 async function gmInit() {
-  // Save all loaded data to gmSync
-  window.gmSync = {
+  // Save all loaded data to gmState
+  window.gmState = {
     // cache isEnabled return value since it is called many times per requests
     isRequestEnabled: undefined,
     runOnce: false,
@@ -22,9 +22,9 @@ async function gmInit() {
   // To fix this, load this data on extension load.
   if (browser.storage) {
     const items = await browser.storage.local.get(null);
-    window.gmSync.whitelist = items['whitelist'] || {};
-    window.gmSync.blacklist = items['blacklist'] || {};
-    window.gmSync.autoRun = !!items['autoRun'];
+    window.gmState.whitelist = items['whitelist'] || {};
+    window.gmState.blacklist = items['blacklist'] || {};
+    window.gmState.autoRun = !!items['autoRun'];
   }
 }
 
@@ -39,12 +39,13 @@ function runGM(url, tabId) {
   }
   
   // window vars are scoped to extension, are persisted across pages, so unset
-  window.gmSync.isRequestEnabled = undefined;
-  window.gmSync.disableOnce = false;
-  window.gmSync.runOnce = false;
+  window.gmState.isRequestEnabled = undefined;
+  window.gmState.disableOnce = false;
+  window.gmState.runOnce = false;
 }
 
 async function runGMInternal() {
+  console.log('at internal!', window.gmState);
   const tabs = await browser.tabs.query({ active: true });
   const { url, id } = tabs[0];
   runGM(url, id);
@@ -80,35 +81,35 @@ function updateIcon(tabId) {
 //Cache the isEnabled result - will be called many times per request
 function isEnabled(url) {
 
-  // console.log(`at isEnabled: cached: ${window.gmSync.isRequestEnabled !== undefined} callee: ${arguments.callee.caller.name}`, window.gmSync);
+  // console.log(`at isEnabled: cached: ${window.gmState.isRequestEnabled !== undefined} callee: ${arguments.callee.caller.name}`, window.gmState);
 
-  if (window.gmSync.isRequestEnabled !== undefined) {
-    return window.gmSync.isRequestEnabled;
+  if (window.gmState.isRequestEnabled !== undefined) {
+    return window.gmState.isRequestEnabled;
   }
 
-  window.gmSync.isRequestEnabled = _isEnabled(url);
-  return window.gmSync.isRequestEnabled;
+  window.gmState.isRequestEnabled = _isEnabled(url);
+  return window.gmState.isRequestEnabled;
 }
 
 // Run GM on this page?
 function _isEnabled(url) {
-  // console.log('At _isEnabled', {gmSync: window.gmSync, url, domain: getDomain(url), isHomepage: isHomepage(url)});
+  // console.log('At _isEnabled', {gmState: window.gmState, url, domain: getDomain(url), isHomepage: isHomepage(url)});
 
   // If runOnce is true, run gm - set in popup.js
-  if (window.gmSync.runOnce) {
+  if (window.gmState.runOnce) {
     return true;
   }
 
-  if (window.gmSync.disableOnce) {
+  if (window.gmState.disableOnce) {
     return false;
   }
 
-  if (window.gmSync.autoRun) {
+  if (window.gmState.autoRun) {
     //run if domain is not on blacklist
-    return !isInList(window.gmSync.blacklist, url);
+    return !isInList(window.gmState.blacklist, url);
   } else {
     //run if domain is on whitelist
-    return isInList(window.gmSync.whitelist, url);
+    return isInList(window.gmState.whitelist, url);
   }
 }
 

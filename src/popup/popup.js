@@ -7,13 +7,13 @@ async function isOnList(listName, callback) {
 
 /*----------- Popup ----------------*/
 async function popupRunOnce() {
-  gmbp.gmSync.runOnce = true;
+  gmbp.gmState.runOnce = true;
   await gmbp.runGMInternal();
   window.close();
 }
 
 async function popupDisableOnce() {
-  gmbp.gmSync.disableOnce = true;
+  gmbp.gmState.disableOnce = true;
   await _popupReload();
 }
 
@@ -46,7 +46,9 @@ async function _popupUpdateList(listName, toDelete) {
 
 async function popupShowRelevantButtons() {
   var listName;
-  if (gmbp.gmSync.autoRun) {
+  console.log("at load popuup", gmbp());
+
+  if (gmbp.gmState.autoRun) {
     $('.whitelist').hide();
     listName = 'blacklist';
   } else {
@@ -76,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
     ['#blacklist-site', popupAddBlacklist],
     ['#unblacklist-site', popupRemoveBlacklist]
   ].forEach( params => {
-    $('.content').on('click', params[0], params[1]);
+    $('.content').on('click', params[0], null, params[1]);
   });
   popupShowRelevantButtons();
 });

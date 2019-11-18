@@ -8,7 +8,7 @@ describe('saveChangeToList', function() {
       blacklist: { },
     };
 
-    window.gmSync = {
+    window.gmState = {
       ...items
     };
     window.browser = window['browser'] || {};
@@ -42,14 +42,14 @@ describe('saveChangeToList', function() {
 
   it('updates the cache', async function(done) {
     await saveChangeToList('whitelist', jkUrl);
-    expect(window.gmSync.whitelist[jkDomain]).toEqual('domain');
+    expect(window.gmState.whitelist[jkDomain]).toEqual('domain');
     await saveChangeToList('blacklist', jkUrl);
-    expect(window.gmSync.blacklist[jkDomain]).toEqual('domain');
+    expect(window.gmState.blacklist[jkDomain]).toEqual('domain');
     //delete
     await saveChangeToList('blacklist', jkUrl, 'deleted');
-    expect(window.gmSync.blacklist[jkDomain]).toEqual('deleted');
+    expect(window.gmState.blacklist[jkDomain]).toEqual('deleted');
     await saveChangeToList('whitelist', jkUrl, 'deleted');
-    expect(window.gmSync.whitelist[jkDomain]).toEqual('deleted');
+    expect(window.gmState.whitelist[jkDomain]).toEqual('deleted');
     done();
   });
 

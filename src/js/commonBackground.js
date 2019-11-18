@@ -14,7 +14,7 @@ async function saveChangeToList(listName, siteUrl, saveFlag = 'domain') {
   if (['deleted', 'domain', 'nohome'].indexOf(saveFlag) < 0) throw 'Invalid save flag';
 
   // Update local cache (in window, not chrome.sync)
-  var list = window.gmSync[listName];
+  var list = window.gmState[listName];
   list[domain] = saveFlag;
 
   //Update persistent storage

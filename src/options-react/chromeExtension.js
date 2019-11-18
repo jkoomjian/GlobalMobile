@@ -27,7 +27,7 @@ window.cExt = {
   },
 
   async saveAutoRun(val) {
-    gmbp.gmSync.autoRun = val;
+    gmbp.gmState.autoRun = val;
     await browser.storage.local.set({ autoRun: val });
   },
 
