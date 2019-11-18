@@ -1,5 +1,5 @@
 const mobileUserAgent = 'Mozilla/5.0 (Linux; Android 6.0) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.89 Mobile Safari/537.36';
-const gmState = {
+window.gmState = {
   // cache isEnabled return value since it is called many times per requests
   isRequestEnabled: undefined,
   runOnce: false,
@@ -54,7 +54,7 @@ async function runGMInternal() {
 async function updateQuerySelectors(tabId) {
   await browser.tabs.executeScript(tabId, { 'file': '/lib/mq.js' });
   await browser.tabs.executeScript(tabId, { 'file': '/lib/uri.js' });
-  await browser.tabs.executeScript(tabId, { 'file': '/js/commonPage.js' });
+  await browser.tabs.executeScript(tabId, { 'file': '/js/common.js' });
   await browser.tabs.executeScript(tabId, { 'file': '/js/mobile-view.js' });
   await browser.tabs.executeScript(tabId, { 'file': '/js/vw.js' });
   await browser.tabs.executeScript(tabId, { 'code': 'runMV()' });

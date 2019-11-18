@@ -93,7 +93,7 @@ async function _popupReload() {
 }
 
 /*----------- Run! ----------------*/
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   [
     ['.run-once', popupRunOnce],
     ['.disable-once', popupDisableOnce],
@@ -104,5 +104,5 @@ document.addEventListener('DOMContentLoaded', function() {
   ].forEach( params => {
     $('.content').on('click', params[0], null, params[1]);
   });
-  popupShowRelevantButtons();
+  await popupShowRelevantButtons();
 });

@@ -29,45 +29,43 @@ async function isOnList(listName, url) {
 }
 
 function updateGMState(updateData) {
-  Object.keys(updateData).forEach(key => gmState[key] = updateData[key]);
+  Object.keys(updateData).forEach(key => window.gmState[key] = updateData[key]);
 }
 
 /*-------------- Messaging ----------------*/
 
 browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  console.log('at runtime on message!', msg, sender);
+  // console.log('at runtime message', msg, sender);
   switch (msg.action) {
-    case 'getGMState': {
-      sendResponse(gmState);  // sendResponse tells browser to return promise
-      break;
-    }
-    case 'updateGMState': {
-      updateGMState(msg.data);
-      console.log('updated gmstate', gmState, msg.data);
+  case 'getGMState': {
+    sendResponse(window.gmState);  // sendResponse tells browser to return promise
+    break;
+  }
+  case 'updateGMState': {
+    updateGMState(msg.data);
+    sendResponse();
+    break;
+  }
+  case 'runGMInternal': {
+    runGMInternal().then(() => {
       sendResponse();
-      break;
-    }
-    case 'runGMInternal': {
-      runGMInternal().then(() => {
-        console.log('ran gm internal', gmState);
-        sendResponse();
-      });
-      break;
-    }
-    case 'saveChangeToList': {
-      const {listName, siteUrl, saveFlag = 'domain'} = msg.data;
-      saveChangeToList(listName, siteUrl, saveFlag).then(() => {
-        sendResponse();
-      });
-      break;
-    }
-    case 'isOnList': {
-      const {listName, url} = msg.data;
-      isOnList(listName, url).then(r => {
-        sendResponse(r);
-      })
-      break;
-    }
+    });
+    break;
+  }
+  case 'saveChangeToList': {
+    const {listName, siteUrl, saveFlag = 'domain'} = msg.data;
+    saveChangeToList(listName, siteUrl, saveFlag).then(() => {
+      sendResponse();
+    });
+    break;
+  }
+  case 'isOnList': {
+    const {listName, url} = msg.data;
+    // For async function calls, return a promise
+    return isOnList(listName, url).then(r => {
+      return r;
+    });
+  }
   }
 
 });
