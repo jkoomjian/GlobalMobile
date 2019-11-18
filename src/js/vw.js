@@ -3,10 +3,7 @@
  * fake width.
  * Replace them with px
  */
-let vwRe = /(-?\d+(\.\d+)?vw)($|;|\s|,|\))/g;
-
-// convert vw to px - the new body will be 800px
-let pxPerVw = Math.floor(800 / 100);
+window.vwRe = /(-?\d+(\.\d+)?vw)($|;|\s|,|\))/g;
 
 // Checks for vw units, converts to px units, applies the updated styles
 function replaceVwWithPx(css) {
@@ -21,6 +18,9 @@ function replaceVwWithPx(css) {
 }
 
 function _convertVwToPx(cssText) {
+  // convert vw to px - the new body will be 800px
+  let pxPerVw = Math.floor(800 / 100);
+
   let cssStmtRe = new RegExp(/([\w-]+):\s*(.*?)[;}]/g);
 
   try {

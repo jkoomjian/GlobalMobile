@@ -1,4 +1,4 @@
-/*----------- Code Shared Between background.js and options.js ----------------*/
+/*----------- Code Shared Between background.js, options.js, and content scripts ----------------*/
 /** 
  * Common functions which do not depend on the addon's WebExtension API.
  * Can be used in both background.js context an page context.

@@ -1,4 +1,13 @@
 const mobileUserAgent = 'Mozilla/5.0 (Linux; Android 6.0) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.89 Mobile Safari/537.36';
+const gmState = {
+  // cache isEnabled return value since it is called many times per requests
+  isRequestEnabled: undefined,
+  runOnce: false,
+  disableOnce: false,
+  whitelist: {},
+  blacklist: {},
+  autoRun: false
+};
 
 
 /*-------------- On Extension Load ----------------*/
@@ -6,15 +15,6 @@ const mobileUserAgent = 'Mozilla/5.0 (Linux; Android 6.0) AppleWebkit/537.36 (KH
 // Load gm data from browser.local
 async function gmInit() {
   // Save all loaded data to gmState
-  window.gmState = {
-    // cache isEnabled return value since it is called many times per requests
-    isRequestEnabled: undefined,
-    runOnce: false,
-    disableOnce: false,
-    whitelist: {},
-    blacklist: {},
-    autoRun: false
-  };
 
   // The whitelist, blacklist and autoRun are loaded async.
   // This causes problems with onBeforeSendHeaders - the headers will
@@ -27,7 +27,6 @@ async function gmInit() {
     window.gmState.autoRun = !!items['autoRun'];
   }
 }
-
 
 
 /*-------------- Start! ----------------*/
@@ -45,8 +44,7 @@ function runGM(url, tabId) {
 }
 
 async function runGMInternal() {
-  console.log('at internal!', window.gmState);
-  const tabs = await browser.tabs.query({ active: true });
+  const tabs = await browser.tabs.query({ active: true, currentWindow: true });
   const { url, id } = tabs[0];
   runGM(url, id);
 }
@@ -160,5 +158,7 @@ browser.webRequest.onBeforeSendHeaders.addListener(
 //Update media queries after page load completed
 browser.webNavigation.onCompleted.addListener(onPageLoad);
 
+
+/*-------------- Run! ----------------*/
 //On Extension Load
 gmInit();

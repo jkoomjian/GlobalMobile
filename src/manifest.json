@@ -4,6 +4,7 @@
   "name": "Global Mobile",
   "version": "1.32",
   "description": "Make all web pages display as they would on a mobile device",
+  // "options_page": "options-react/options.html",
   "options_ui": {
     "page": "options-react/options.html",
     "browser_style": false

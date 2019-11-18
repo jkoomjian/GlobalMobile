@@ -1,19 +1,17 @@
 /** 
  * This file integrates the chrome extension api with options.
- * Only include it when testing with the extension.
  * When testing with extension, you will have to update the content security policy in manifet.json
  * each time the file is modified.
  */
 
 
 // Pull in methods from background page
-const gmbp = browser.extension.getBackgroundPage();
+const getChromeExtensions = () => {
 
-window.cExt = {
-  async getInitialState(callback) {
+  const getInitialState = async (callback) => {
     const getActiveEntries = (data) => (
       Object.fromEntries(
-        Object.entries(data || {}).filter(([url, saveFlag]) => gmbp.isActiveDomain(saveFlag))
+        Object.entries(data || {}).filter(([url, saveFlag]) => isActiveDomain(saveFlag))
       )
     );
 
@@ -24,20 +22,40 @@ window.cExt = {
       whitelist: getActiveEntries(storage['whitelist']),
       blacklist: getActiveEntries(storage['blacklist']),
     };
-  },
+  };
 
-  async saveAutoRun(val) {
-    gmbp.gmState.autoRun = val;
+  const saveAutoRun = async (val) => {
+    await browser.runtime.sendMessage({
+      action: 'updateGMState',
+      data: {autoRun: val}
+    });
     await browser.storage.local.set({ autoRun: val });
-  },
+  };
 
-  async addSite(siteUrl, shouldSkipHome, listName) {
-    const saveFlag = shouldSkipHome ? 'nohome' : 'domain';
-    await gmbp.saveChangeToList(listName, siteUrl, saveFlag);
-  },
+  const addSite = async (siteUrl, shouldSkipHome, listName) => {
+    await browser.runtime.sendMessage({
+      action: 'saveChangeToList',
+      data: {
+        listName,
+        siteUrl,
+        saveFlag: shouldSkipHome ? 'nohome' : 'domain'
+      }
+    });
+  };
 
-  async deleteSite(siteUrl, listName) {
-    await gmbp.saveChangeToList(listName, siteUrl, 'deleted');
-  }
+  const deleteSite = async (siteUrl, listName) => {
+    await browser.runtime.sendMessage({
+      action: 'saveChangeToList',
+      data: {
+        listName,
+        siteUrl,
+        saveFlag: 'deleted'
+      }
+    });
+  };
 
-};
+  return {getInitialState, saveAutoRun, addSite, deleteSite};
+}
+
+
+if (window.browser) window.cExt = getChromeExtensions();

@@ -1,6 +1,4 @@
-/** Common function executed in the background context (access to browser, but not the page) */
-
-/*----------- Code Shared Between background.js, options.js and popup.js ----------------*/
+/** Helpers + Messaging for background page */
 
 /**
  * Save the domain to the given list
@@ -29,3 +27,47 @@ async function isOnList(listName, url) {
   const items = await browser.storage.local.get({ [listName]: {} });
   return isActiveDomain(items[listName][domain]);
 }
+
+function updateGMState(updateData) {
+  Object.keys(updateData).forEach(key => gmState[key] = updateData[key]);
+}
+
+/*-------------- Messaging ----------------*/
+
+browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  console.log('at runtime on message!', msg, sender);
+  switch (msg.action) {
+    case 'getGMState': {
+      sendResponse(gmState);  // sendResponse tells browser to return promise
+      break;
+    }
+    case 'updateGMState': {
+      updateGMState(msg.data);
+      console.log('updated gmstate', gmState, msg.data);
+      sendResponse();
+      break;
+    }
+    case 'runGMInternal': {
+      runGMInternal().then(() => {
+        console.log('ran gm internal', gmState);
+        sendResponse();
+      });
+      break;
+    }
+    case 'saveChangeToList': {
+      const {listName, siteUrl, saveFlag = 'domain'} = msg.data;
+      saveChangeToList(listName, siteUrl, saveFlag).then(() => {
+        sendResponse();
+      });
+      break;
+    }
+    case 'isOnList': {
+      const {listName, url} = msg.data;
+      isOnList(listName, url).then(r => {
+        sendResponse(r);
+      })
+      break;
+    }
+  }
+
+});
