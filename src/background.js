@@ -1,19 +1,21 @@
 const mobileUserAgent = 'Mozilla/5.0 (Linux; Android 6.0) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.89 Mobile Safari/537.36';
-window.gmState = {
-  // cache isEnabled return value since it is called many times per requests
-  isRequestEnabled: undefined,
-  runOnce: false,
-  disableOnce: false,
-  whitelist: {},
-  blacklist: {},
-  autoRun: false
-};
+window.gmState = {};
 
 
 /*-------------- On Extension Load ----------------*/
 
 // Load gm data from browser.local
 async function gmInit() {
+  window.gmState = {
+    // cache isEnabled return value since it is called many times per requests
+    isRequestEnabled: undefined,
+    runOnce: false,
+    disableOnce: false,
+    whitelist: {},
+    blacklist: {},
+    autoRun: false
+  };
+
   // Save all loaded data to gmState
 
   // The whitelist, blacklist and autoRun are loaded async.
@@ -26,6 +28,21 @@ async function gmInit() {
     window.gmState.blacklist = items['blacklist'] || {};
     window.gmState.autoRun = !!items['autoRun'];
   }
+
+  // Add Listeners
+
+  //Update headers before each http request
+  browser.webRequest.onBeforeSendHeaders.addListener(
+    updateHeaders,
+    {
+      urls: ['<all_urls>'],
+      types: ['main_frame']
+    },
+    ['blocking', 'requestHeaders']
+  );
+
+  //Update media queries after page load completed
+  browser.webNavigation.onCompleted.addListener(onPageLoad);
 }
 
 
@@ -141,22 +158,6 @@ function onPageLoad(details) {
 
   runGM(details.url, details.tabId);
 }
-
-
-/*-------------- Listeners ----------------*/
-
-//Update headers before each http request
-browser.webRequest.onBeforeSendHeaders.addListener(
-  updateHeaders, 
-  {
-    urls: ['<all_urls>'],
-    types: ['main_frame']
-  },
-  ['blocking', 'requestHeaders']
-);
-
-//Update media queries after page load completed
-browser.webNavigation.onCompleted.addListener(onPageLoad);
 
 
 /*-------------- Run! ----------------*/
